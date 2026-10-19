@@ -4,8 +4,7 @@
 
 **Play it:** https://lewisca.github.io/Balloon-Stack/
 
-![Balloon Stack screenshot](docs/screenshot.png)
-<!-- Screenshot placeholder: save a capture of the game with the AI inspector open as docs/screenshot.png -->
+![Balloon Stack: balloons on the floor beside a potted olive tree, waiting to be stacked into the corner](docs/screenshot.png)
 
 Drag 11 balloons off the floor and stack them into a corner. If any balloon rolls out past the lip, the stack falls. Every balloon has hidden **grip** and **bounce** values, so the same placement can hold with one balloon and fail with another. You can play solo or take turns against an AI forecaster that has to deal with the same uncertainty you do.
 
@@ -25,6 +24,8 @@ The game is a small, end-to-end example of making decisions under uncertainty, w
 | **Decision tracing for observability** | Each game is an OpenTelemetry session, and each move is its own trace: `move > squeeze / forecast / physics.settle`. Spans record priors, readings, posteriors, candidate odds, the AI's decision, and the outcome. Spans use OpenInference kinds (AGENT, CHAIN, TOOL, EVALUATOR) with input and output summaries. They export as OTLP to [Arize AX](https://arize.com/), where each game shows up as a session you can replay and filter. |
 
 The player's view has no numbers. Turn on the **AI inspector** to see per-spot odds, belief bars with uncertainty bands, the calibration table, the Brier score, and the decision trace.
+
+![The AI inspector after a finished game: each balloon labeled with its true grip, the calibration table, and the decision trace with Copy and Download buttons](docs/inspector.png)
 
 ## How to play
 
@@ -68,15 +69,14 @@ src/game.js      game loop, AI, tracing, input, rendering
 build.js         concatenates src/ into index.html
 index.html       the built single-file game
 headless/        calibration check, sample-trace generator, OTLP exporter
-docs/            sample trace (and screenshot)
+docs/            sample trace and screenshots
 ```
 
 ## Observability with Arize
 
 The forecaster is an agent that makes decisions under uncertainty, so it's instrumented the way you'd instrument an AI system in production. Every decision is traced with its inputs, its reasoning steps, its prediction and the real outcome. The traces go to [Arize AX](https://arize.com/), where each game can be replayed, filtered and measured.
 
-![Balloon Stack traces in Arize AX](docs/arize-traces.png)
-<!-- Screenshot placeholder: save a capture of the balloon-stack project's Traces tab in Arize AX as docs/arize-traces.png -->
+![The balloon-stack project in Arize AX: 12 traces, each move a CHAIN with its input and output, and one move expanded to show its forecast (EVALUATOR) and physics.settle (TOOL) spans](docs/arize-traces.png)
 
 ### The trace model
 
