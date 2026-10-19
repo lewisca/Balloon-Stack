@@ -185,6 +185,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
           <ol class="trace" id="trace"></ol>
           <div class="btns">
             <button id="bCopy">Copy trace JSON</button>
+            <button id="bDownload">Download trace</button>
           </div>
           <textarea id="traceOut" class="traceout" readonly hidden aria-label="Trace JSON"></textarea>
           <p class="hint">Span records with trace and parent ids, shaped like OpenTelemetry so they can be sent to a collector.</p>
@@ -748,6 +749,14 @@ $('bCopy').addEventListener('click', () => {
   try {
     navigator.clipboard.writeText(json).then(() => { $('bCopy').textContent = 'Copied'; setTimeout(() => $('bCopy').textContent = 'Copy trace JSON', 1600); }, fallback);
   } catch (_) { fallback(); }
+});
+$('bDownload').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(Tr.export(), null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `balloon-stack-trace-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 0);
 });
 
 try { if (localStorage.getItem('bs-inspect') === '1') { $('cInspect').checked = true; inspect = true; $('inspector').hidden = false; } } catch (_) {}

@@ -450,6 +450,14 @@ $('bCopy').addEventListener('click', () => {
     navigator.clipboard.writeText(json).then(() => { $('bCopy').textContent = 'Copied'; setTimeout(() => $('bCopy').textContent = 'Copy trace JSON', 1600); }, fallback);
   } catch (_) { fallback(); }
 });
+$('bDownload').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(Tr.export(), null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `balloon-stack-trace-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 0);
+});
 
 try { if (localStorage.getItem('bs-inspect') === '1') { $('cInspect').checked = true; inspect = true; $('inspector').hidden = false; } } catch (_) {}
 newGame();
