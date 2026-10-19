@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "node build.js",
-    "check": "node headless/calibration-check.js"
+    "check": "node headless/calibration-check.js",
+    "trace": "node headless/sample-trace.js"
   },
   "devDependencies": {
     "matter-js": "0.19.0"

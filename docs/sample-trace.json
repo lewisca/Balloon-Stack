@@ -1,0 +1,2997 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": {
+          "service.name": "balloon-stack",
+          "service.version": "1.0"
+        }
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "balloon-stack.forecaster"
+          },
+          "spans": [
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "a9fec20c1dab3fcb",
+              "parentSpanId": null,
+              "name": "game",
+              "startTimeUnixNano": "1792418010754899700",
+              "endTimeUnixNano": "1792418047470210600",
+              "attributes": {
+                "game.mode": "solo",
+                "game.balloons": 11,
+                "game.first_turn": "ai",
+                "game.result": "lost",
+                "game.end_reason": "spill",
+                "stack.final_size": 10,
+                "brier.score": 0,
+                "true_values": [
+                  {
+                    "id": 1,
+                    "grip": 0.563,
+                    "bounce": 0.834
+                  },
+                  {
+                    "id": 2,
+                    "grip": 0.859,
+                    "bounce": 0.234
+                  },
+                  {
+                    "id": 3,
+                    "grip": 0.657,
+                    "bounce": 0.56
+                  },
+                  {
+                    "id": 4,
+                    "grip": 0.795,
+                    "bounce": 0.411
+                  },
+                  {
+                    "id": 5,
+                    "grip": 0.52,
+                    "bounce": 0.214
+                  },
+                  {
+                    "id": 7,
+                    "grip": 0.199,
+                    "bounce": 0.927
+                  },
+                  {
+                    "id": 9,
+                    "grip": 0.373,
+                    "bounce": 0.269
+                  },
+                  {
+                    "id": 10,
+                    "grip": 0.813,
+                    "bounce": 0.969
+                  },
+                  {
+                    "id": 11,
+                    "grip": 0.431,
+                    "bounce": 0.982
+                  },
+                  {
+                    "id": 6,
+                    "grip": 0.295,
+                    "bounce": 0.293
+                  },
+                  {
+                    "id": 8,
+                    "grip": 0.162,
+                    "bounce": 0.085
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "56fe4369f52c82f3",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418010759107000",
+              "endTimeUnixNano": "1792418011361110500",
+              "attributes": {
+                "move.number": 1,
+                "move.actor": "ai",
+                "stack.size": 0,
+                "balloon.id": 1,
+                "spot": 1,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418010759416300",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 1,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 2,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 3,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 4,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 5,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 6,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 7,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 9,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418011343073300",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      1,
+                      2,
+                      3
+                    ],
+                    "chosen_balloon": 1,
+                    "chosen_spot": 1,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "b1bed7d6b73ca0d5",
+              "parentSpanId": "56fe4369f52c82f3",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418010759710500",
+              "endTimeUnixNano": "1792418010759977700",
+              "attributes": {
+                "balloon.id": 1,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.59,
+                "reading.bounce": 0.755,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.567,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.688,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "4fc2c30472455965",
+              "parentSpanId": "56fe4369f52c82f3",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418011348383200",
+              "endTimeUnixNano": "1792418011348449800",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 1,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 1,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 1,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 1,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 1,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 1,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 1,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "adda2ffd60be82de",
+              "parentSpanId": "56fe4369f52c82f3",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418011349041200",
+              "endTimeUnixNano": "1792418011361034000",
+              "attributes": {
+                "balloon.id": 1,
+                "spot": 1,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "a22b01a3afc600f1",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418011361729300",
+              "endTimeUnixNano": "1792418012219373300",
+              "attributes": {
+                "move.number": 2,
+                "move.actor": "ai",
+                "stack.size": 1,
+                "balloon.id": 2,
+                "spot": 1,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418011361775400",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 2,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 3,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 4,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 5,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 6,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 7,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 9,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418012207696000",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      2,
+                      3,
+                      4
+                    ],
+                    "chosen_balloon": 2,
+                    "chosen_spot": 1,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "884daa6f78dba596",
+              "parentSpanId": "a22b01a3afc600f1",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418011361832200",
+              "endTimeUnixNano": "1792418011361879800",
+              "attributes": {
+                "balloon.id": 2,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.858,
+                "reading.bounce": 0.243,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.763,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.311,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "e8b90569588dee7e",
+              "parentSpanId": "a22b01a3afc600f1",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418012208780500",
+              "endTimeUnixNano": "1792418012208795400",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 2,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 2,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "c17b9bd5dd7847b3",
+              "parentSpanId": "a22b01a3afc600f1",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418012209009700",
+              "endTimeUnixNano": "1792418012219342300",
+              "attributes": {
+                "balloon.id": 2,
+                "spot": 1,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "a64be17e8b3c0e0b",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418012219728600",
+              "endTimeUnixNano": "1792418013711067100",
+              "attributes": {
+                "move.number": 3,
+                "move.actor": "ai",
+                "stack.size": 2,
+                "balloon.id": 3,
+                "spot": 1,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418012219764000",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 3,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 4,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 5,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 6,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 7,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 9,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418013693736400",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      3,
+                      4,
+                      5
+                    ],
+                    "chosen_balloon": 3,
+                    "chosen_spot": 1,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "1dac7ce0cc769e06",
+              "parentSpanId": "a64be17e8b3c0e0b",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418012219802400",
+              "endTimeUnixNano": "1792418012219839500",
+              "attributes": {
+                "balloon.id": 3,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.712,
+                "reading.bounce": 0.735,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.656,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.672,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "0ac9708c4ba1e1c5",
+              "parentSpanId": "a64be17e8b3c0e0b",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418013694770200",
+              "endTimeUnixNano": "1792418013694786300",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 3,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 3,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.25
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "f1fedcfee81236d6",
+              "parentSpanId": "a64be17e8b3c0e0b",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418013694948900",
+              "endTimeUnixNano": "1792418013711021800",
+              "attributes": {
+                "balloon.id": 3,
+                "spot": 1,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "6a9ded9c39e056ae",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418013711739600",
+              "endTimeUnixNano": "1792418015921241300",
+              "attributes": {
+                "move.number": 4,
+                "move.actor": "ai",
+                "stack.size": 3,
+                "balloon.id": 4,
+                "spot": 2,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418013711772200",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 4,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 5,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 6,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 7,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 9,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418015889747200",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      4,
+                      5,
+                      6
+                    ],
+                    "chosen_balloon": 4,
+                    "chosen_spot": 2,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "376f09b9554444d9",
+              "parentSpanId": "6a9ded9c39e056ae",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418013711811000",
+              "endTimeUnixNano": "1792418013711854800",
+              "attributes": {
+                "balloon.id": 4,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.787,
+                "reading.bounce": 0.455,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.711,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.467,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "6f23391245567d11",
+              "parentSpanId": "6a9ded9c39e056ae",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418015890923300",
+              "endTimeUnixNano": "1792418015890955800",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 4,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 4,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 4,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.25
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.25
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.25
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "5f3c17f4c39b4ca5",
+              "parentSpanId": "6a9ded9c39e056ae",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418015891280600",
+              "endTimeUnixNano": "1792418015921191200",
+              "attributes": {
+                "balloon.id": 4,
+                "spot": 2,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "8172ca9d3a989f6d",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418015921715700",
+              "endTimeUnixNano": "1792418018651393500",
+              "attributes": {
+                "move.number": 5,
+                "move.actor": "ai",
+                "stack.size": 4,
+                "balloon.id": 5,
+                "spot": 2,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418015921743600",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 5,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 6,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 7,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 9,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418018631394600",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      5,
+                      6,
+                      7
+                    ],
+                    "chosen_balloon": 5,
+                    "chosen_spot": 2,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "70a93329e3910564",
+              "parentSpanId": "8172ca9d3a989f6d",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418015921815800",
+              "endTimeUnixNano": "1792418015921911600",
+              "attributes": {
+                "balloon.id": 5,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.795,
+                "reading.bounce": 0.186,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.717,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.269,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "cb6a7340e06e136e",
+              "parentSpanId": "8172ca9d3a989f6d",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418018631865600",
+              "endTimeUnixNano": "1792418018631884800",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 5,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 4,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.5
+                  },
+                  {
+                    "balloon": 5,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.375
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "0f4081f1492a29db",
+              "parentSpanId": "8172ca9d3a989f6d",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418018632156700",
+              "endTimeUnixNano": "1792418018651368000",
+              "attributes": {
+                "balloon.id": 5,
+                "spot": 2,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "18d3c414d65ce09f",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418018651689000",
+              "endTimeUnixNano": "1792418023260601600",
+              "attributes": {
+                "move.number": 6,
+                "move.actor": "ai",
+                "stack.size": 5,
+                "balloon.id": 7,
+                "spot": 1,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418018651710200",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 6,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 7,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 9,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418023232669000",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      7,
+                      8,
+                      9
+                    ],
+                    "chosen_balloon": 7,
+                    "chosen_spot": 1,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "5bbad0156565b76d",
+              "parentSpanId": "18d3c414d65ce09f",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418018651739100",
+              "endTimeUnixNano": "1792418018651771600",
+              "attributes": {
+                "balloon.id": 6,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.336,
+                "reading.bounce": 0.131,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.379,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.228,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "e2f7e19971883a23",
+              "parentSpanId": "18d3c414d65ce09f",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418023233810200",
+              "endTimeUnixNano": "1792418023233826800",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 7,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 7,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.5
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "44297d0ebfb1a62b",
+              "parentSpanId": "18d3c414d65ce09f",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418023234055400",
+              "endTimeUnixNano": "1792418023260579000",
+              "attributes": {
+                "balloon.id": 7,
+                "spot": 1,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "9bdbbacdfa234c6f",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418023261678300",
+              "endTimeUnixNano": "1792418027738761700",
+              "attributes": {
+                "move.number": 7,
+                "move.actor": "ai",
+                "stack.size": 6,
+                "balloon.id": 9,
+                "spot": 2,
+                "prediction.p_hold": 0.969,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0.001
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418023261694700",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 6,
+                        "grip_mean": 0.379,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.228,
+                        "bounce_var": 0.017
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 9,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418027705707500",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      9,
+                      10,
+                      11
+                    ],
+                    "chosen_balloon": 9,
+                    "chosen_spot": 2,
+                    "p_hold": 0.969
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "8ebaa61bfd962cf4",
+              "parentSpanId": "9bdbbacdfa234c6f",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418023261731800",
+              "endTimeUnixNano": "1792418023261764600",
+              "attributes": {
+                "balloon.id": 8,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.156,
+                "reading.bounce": 0.132,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.247,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.229,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "810a9d046c32ea5d",
+              "parentSpanId": "9bdbbacdfa234c6f",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418027706725400",
+              "endTimeUnixNano": "1792418027706738000",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 9,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 0.969
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 0.969
+                  },
+                  {
+                    "balloon": 9,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 0.875
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.875
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 0.875
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "5bd60a1b4f8848fe",
+              "parentSpanId": "9bdbbacdfa234c6f",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418027706894300",
+              "endTimeUnixNano": "1792418027738710500",
+              "attributes": {
+                "balloon.id": 9,
+                "spot": 2,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "e6773c5e8ab85ae6",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418027739736600",
+              "endTimeUnixNano": "1792418032806078700",
+              "attributes": {
+                "move.number": 8,
+                "move.actor": "ai",
+                "stack.size": 7,
+                "balloon.id": 10,
+                "spot": 1,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418027739755300",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 6,
+                        "grip_mean": 0.379,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.228,
+                        "bounce_var": 0.017
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.247,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.229,
+                        "bounce_var": 0.017
+                      },
+                      {
+                        "id": 10,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418032765545500",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      10,
+                      11,
+                      6
+                    ],
+                    "chosen_balloon": 10,
+                    "chosen_spot": 1,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "843ea340ce618f6b",
+              "parentSpanId": "e6773c5e8ab85ae6",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418027739789800",
+              "endTimeUnixNano": "1792418027739837000",
+              "attributes": {
+                "balloon.id": 10,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.782,
+                "reading.bounce": 1,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.707,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.868,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "fd002882746aae7c",
+              "parentSpanId": "e6773c5e8ab85ae6",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418032766000400",
+              "endTimeUnixNano": "1792418032766018600",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 10,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 10,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "62ba51aa99bd446e",
+              "parentSpanId": "e6773c5e8ab85ae6",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418032766323500",
+              "endTimeUnixNano": "1792418032806057500",
+              "attributes": {
+                "balloon.id": 10,
+                "spot": 1,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "aeabdc654a15b9c1",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418032806695400",
+              "endTimeUnixNano": "1792418039805951500",
+              "attributes": {
+                "move.number": 9,
+                "move.actor": "ai",
+                "stack.size": 8,
+                "balloon.id": 11,
+                "spot": 1,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418032806721000",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 6,
+                        "grip_mean": 0.379,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.228,
+                        "bounce_var": 0.017
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.247,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.229,
+                        "bounce_var": 0.017
+                      },
+                      {
+                        "id": 11,
+                        "grip_mean": 0.5,
+                        "grip_var": 0.063,
+                        "bounce_mean": 0.5,
+                        "bounce_var": 0.063
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418039755654000",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      11,
+                      6,
+                      8
+                    ],
+                    "chosen_balloon": 11,
+                    "chosen_spot": 1,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "1e4118123982c3a2",
+              "parentSpanId": "aeabdc654a15b9c1",
+              "name": "squeeze",
+              "startTimeUnixNano": "1792418032806753500",
+              "endTimeUnixNano": "1792418032806788600",
+              "attributes": {
+                "balloon.id": 11,
+                "prior.grip_mean": 0.5,
+                "prior.grip_var": 0.063,
+                "prior.bounce_mean": 0.5,
+                "prior.bounce_var": 0.063,
+                "reading.grip": 0.506,
+                "reading.bounce": 0.715,
+                "reading.noise_sd": 0.15,
+                "kalman_gain.grip": 0.735,
+                "kalman_gain.bounce": 0.735,
+                "posterior.grip_mean": 0.505,
+                "posterior.grip_var": 0.017,
+                "posterior.bounce_mean": 0.658,
+                "posterior.bounce_var": 0.017
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "c20207eb457a0346",
+              "parentSpanId": "aeabdc654a15b9c1",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418039756810500",
+              "endTimeUnixNano": "1792418039756829000",
+              "attributes": {
+                "candidates.count": 21,
+                "rollouts.total": 240,
+                "candidates": [
+                  {
+                    "balloon": 11,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 11,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 0.875
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0.875
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "37863ac22434a09a",
+              "parentSpanId": "aeabdc654a15b9c1",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418039757031200",
+              "endTimeUnixNano": "1792418039805912000",
+              "attributes": {
+                "balloon.id": 11,
+                "spot": 1,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "ea6d83d468fbf582",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418039806703000",
+              "endTimeUnixNano": "1792418044954460000",
+              "attributes": {
+                "move.number": 10,
+                "move.actor": "ai",
+                "stack.size": 9,
+                "balloon.id": 6,
+                "spot": 4,
+                "prediction.p_hold": 1,
+                "prediction.rollouts": 32,
+                "outcome.held": true,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418039806722600",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 6,
+                        "grip_mean": 0.379,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.228,
+                        "bounce_var": 0.017
+                      },
+                      {
+                        "id": 8,
+                        "grip_mean": 0.247,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.229,
+                        "bounce_var": 0.017
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418044908676600",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      6,
+                      8
+                    ],
+                    "chosen_balloon": 6,
+                    "chosen_spot": 4,
+                    "p_hold": 1
+                  }
+                }
+              ],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "7f91383778836935",
+              "parentSpanId": "ea6d83d468fbf582",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418044909745000",
+              "endTimeUnixNano": "1792418044909756400",
+              "attributes": {
+                "candidates.count": 14,
+                "rollouts.total": 184,
+                "candidates": [
+                  {
+                    "balloon": 6,
+                    "spot": 4,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 5,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 6,
+                    "rollouts": 32,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 1
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 0.25
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 6,
+                    "spot": 3,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 1,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 2,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "463167e3606a6cb9",
+              "parentSpanId": "ea6d83d468fbf582",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418044909907700",
+              "endTimeUnixNano": "1792418044954438400",
+              "attributes": {
+                "balloon.id": 6,
+                "spot": 4,
+                "steps": 210,
+                "outcome.held": true,
+                "outcome.spilled_ids": []
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "4369af08261b9e1c",
+              "parentSpanId": "a9fec20c1dab3fcb",
+              "name": "move",
+              "startTimeUnixNano": "1792418044954641700",
+              "endTimeUnixNano": "1792418047467654100",
+              "attributes": {
+                "move.number": 11,
+                "move.actor": "ai",
+                "stack.size": 10,
+                "balloon.id": 8,
+                "spot": 1,
+                "prediction.p_hold": 0,
+                "prediction.rollouts": 32,
+                "outcome.held": false,
+                "brier.contribution": 0
+              },
+              "events": [
+                {
+                  "name": "beliefs.snapshot",
+                  "timeUnixNano": "1792418044954651100",
+                  "attributes": {
+                    "balloons": [
+                      {
+                        "id": 8,
+                        "grip_mean": 0.247,
+                        "grip_var": 0.017,
+                        "bounce_mean": 0.229,
+                        "bounce_var": 0.017
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "ai.decision",
+                  "timeUnixNano": "1792418047347672000",
+                  "attributes": {
+                    "policy": "max p_hold over top-3 balloons by believed grip",
+                    "shortlist": [
+                      8
+                    ],
+                    "chosen_balloon": 8,
+                    "chosen_spot": 1,
+                    "p_hold": 0
+                  }
+                }
+              ],
+              "status": {
+                "code": "ERROR"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "8d9e768dc33d2703",
+              "parentSpanId": "4369af08261b9e1c",
+              "name": "forecast",
+              "startTimeUnixNano": "1792418047348860200",
+              "endTimeUnixNano": "1792418047348882700",
+              "attributes": {
+                "candidates.count": 7,
+                "rollouts.total": 128,
+                "candidates": [
+                  {
+                    "balloon": 8,
+                    "spot": 1,
+                    "rollouts": 32,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 2,
+                    "rollouts": 32,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 3,
+                    "rollouts": 32,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 4,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 5,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 6,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  },
+                  {
+                    "balloon": 8,
+                    "spot": 7,
+                    "rollouts": 8,
+                    "p_hold": 0
+                  }
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "OK"
+              }
+            },
+            {
+              "traceId": "91297a415a7c277f06c5150acb132185",
+              "spanId": "a8c0fd2267c6bb75",
+              "parentSpanId": "4369af08261b9e1c",
+              "name": "physics.settle",
+              "startTimeUnixNano": "1792418047349186800",
+              "endTimeUnixNano": "1792418047467615500",
+              "attributes": {
+                "balloon.id": 8,
+                "spot": 1,
+                "steps": 210,
+                "outcome.held": false,
+                "outcome.spilled_ids": [
+                  7,
+                  8
+                ]
+              },
+              "events": [],
+              "status": {
+                "code": "ERROR"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
