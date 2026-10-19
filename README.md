@@ -22,7 +22,7 @@ The game is a small, end-to-end example of making decisions under uncertainty, w
 | **Monte Carlo forecasting with physics rollouts** | To score a placement, the forecaster rebuilds the current stack in a fresh [Matter.js](https://brm.io/matter-js/) world, draws every balloon's hidden values from its beliefs, drops the new balloon, and simulates. The share of rollouts in which nothing spills is its estimate of P(hold). |
 | **An AI opponent that picks by expected success** | On its turn, the AI squeezes whichever balloon it's least sure about, shortlists the three balloons it believes are grippiest, runs 8 rollouts for every spot, refines the top three to 32 rollouts, and plays the one most likely to hold. |
 | **Calibration scoring** | Every forecast is graded against what actually happened. The inspector shows a reliability table (predicted vs. actual by bucket) and the running **Brier score**. A headless check measures calibration over many simulated games and fails the build if it drifts. |
-| **Decision tracing for observability** | Each game produces OpenTelemetry-shaped spans: `game > move > squeeze / forecast / physics.settle`. They record priors, readings, posteriors, candidate odds, the AI's decision, and the outcome. You can copy or download the trace as JSON. |
+| **Decision tracing for observability** | Each game is an OpenTelemetry session, and each move is its own trace: `move > squeeze / forecast / physics.settle`. Spans record priors, readings, posteriors, candidate odds, the AI's decision, and the outcome. The trace downloads as OTLP/JSON and loads into Jaeger or any OpenTelemetry backend. |
 
 The player's view has no numbers. Turn on the **AI inspector** to see per-spot odds, belief bars with uncertainty bands, the calibration table, the Brier score, and the decision trace.
 
@@ -42,6 +42,7 @@ npm install
 npm run build   # assemble index.html from src/
 npm run check   # headless calibration check; fails if Brier > 0.08
 npm run trace   # play a seeded game headlessly and write docs/sample-trace.json
+npm run export -- <trace.json>   # send a trace to an OTLP collector (default localhost:4318)
 ```
 
 `npm run check` plays seeded games in Node, forecasts each move with 16 rollouts, plays it out for real, and reports the result:
@@ -66,47 +67,77 @@ src/sim.js       physics world, belief sampling, Monte Carlo rollouts (shared wi
 src/game.js      game loop, AI, tracing, input, rendering
 build.js         concatenates src/ into index.html
 index.html       the built single-file game
-headless/        calibration check and sample-trace generator
+headless/        calibration check, sample-trace generator, OTLP exporter
 docs/            sample trace (and screenshot)
 ```
 
-## A trace excerpt
+## Traces: one session per game, one trace per move
 
-From [`docs/sample-trace.json`](docs/sample-trace.json), a solo game the forecaster played headlessly. On move 7, the AI squeezed balloon #8 first. The reading pulled its grip estimate from 0.5 down to 0.247 and cut the variance from 0.063 to 0.017:
+Every game is a **session**. Each balloon placement is its own **trace**, rooted at a `move` span:
+
+```
+session 91297a41…  (session.id on every span)
+├── trace: game                 mode, result, Brier score, true hidden values
+├── trace: move 1
+│   ├── squeeze                 prior → noisy reading → Kalman gain → posterior
+│   ├── forecast                every candidate spot with its rollouts and P(hold)
+│   └── physics.settle          the real outcome: held, or which balloons spilled
+├── trace: move 2
+│   └── …
+```
+
+**Download trace** in the inspector saves the current game as strict [OTLP/JSON](https://opentelemetry.io/docs/specs/otlp/#json-protobuf-encoding), the format OpenTelemetry collectors accept at `/v1/traces`.
+
+### A trace excerpt
+
+From [`docs/sample-trace.json`](docs/sample-trace.json), a solo game the forecaster played headlessly and won with all 11 balloons stacked. On move 3 it squeezed balloon #5. The reading pulled the bounce estimate from 0.5 down to 0.381 and cut both variances from 0.063 to 0.017. Shown here with attributes flattened for reading; the file uses OTLP's `{key, value}` encoding.
 
 ```json
 {
   "name": "squeeze",
-  "parentSpanId": "9bdbbacdfa234c6f",
+  "traceId": "6221557ee486a5994e49caafaba4fff4",
+  "parentSpanId": "66e3b789af583deb",
   "attributes": {
-    "balloon.id": 8,
-    "prior.grip_mean": 0.5,       "prior.grip_var": 0.063,
-    "reading.grip": 0.156,        "reading.noise_sd": 0.15,
+    "session.id": "91297a415a7c277f06c5150acb132185",
+    "balloon.id": 5,
+    "prior.grip_mean": 0.5,       "prior.bounce_mean": 0.5,     "prior.grip_var": 0.063,
+    "reading.grip": 0.551,        "reading.bounce": 0.339,      "reading.noise_sd": 0.15,
     "kalman_gain.grip": 0.735,
-    "posterior.grip_mean": 0.247, "posterior.grip_var": 0.017
+    "posterior.grip_mean": 0.537, "posterior.bounce_mean": 0.381, "posterior.grip_var": 0.017
   }
 }
 ```
 
-It then placed balloon #9 in spot 2 with a 96.9% forecast, and the stack held:
+It then compared 21 candidate spots across three balloons (240 rollouts in total), placed #5 in spot 2 with a 100% forecast, and the stack held:
 
 ```json
 {
   "name": "move",
-  "spanId": "9bdbbacdfa234c6f",
+  "traceId": "6221557ee486a5994e49caafaba4fff4",
+  "spanId": "66e3b789af583deb",
   "attributes": {
-    "move.number": 7, "move.actor": "ai", "stack.size": 6,
-    "balloon.id": 9, "spot": 2,
-    "prediction.p_hold": 0.969, "prediction.rollouts": 32,
-    "outcome.held": true, "brier.contribution": 0.001
+    "session.id": "91297a415a7c277f06c5150acb132185",
+    "move.number": 3, "move.actor": "ai", "stack.size": 2,
+    "balloon.id": 5, "spot": 2,
+    "prediction.p_hold": 1, "prediction.rollouts": 32,
+    "outcome.held": true, "brier.contribution": 0
   },
   "events": [{ "name": "ai.decision", "attributes": {
     "policy": "max p_hold over top-3 balloons by believed grip",
-    "shortlist": [9, 10, 11], "chosen_balloon": 9, "chosen_spot": 2, "p_hold": 0.969 } }]
+    "shortlist": [5, 6, 7], "chosen_balloon": 5, "chosen_spot": 2, "p_hold": 1 } }]
 }
 ```
 
-By the last move, every remaining option had a 0% forecast. The AI predicted the spill correctly, so the game was lost but the forecasts stayed well calibrated.
+### Viewing traces in a trace viewer
+
+Any OpenTelemetry backend works. To run one locally with [Jaeger](https://www.jaegertracing.io/download/):
+
+1. Start Jaeger v2. Either use Docker, `docker run --rm -p 16686:16686 -p 4318:4318 jaegertracing/jaeger:latest`, or download the binary for your OS and run `jaeger`. It accepts OTLP over HTTP on port 4318.
+2. Play a game, open the inspector, and click **Download trace**.
+3. Send it: `npm run export -- path/to/balloon-stack-trace-….json`. You can also try it with the sample: `npm run export -- docs/sample-trace.json`.
+4. Open http://localhost:16686 and pick service **balloon-stack**. Each move is a trace. To see one game, search by tag `session.id=<id>`.
+
+To send traces somewhere else, pass the endpoint as a second argument, or set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`. Viewers with a sessions view, such as [Arize Phoenix](https://phoenix.arize.com/), group the traces by `session.id`.
 
 ## Lessons learned: a calibration bug found through the inspector
 

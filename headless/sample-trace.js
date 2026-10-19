@@ -30,8 +30,10 @@ const ctx = {
     const out = path.join(root, 'docs', 'sample-trace.json');
     fs.mkdirSync(path.dirname(out), { recursive: true });
     fs.writeFileSync(out, JSON.stringify(t, null, 2) + '\n');
-    const game = t.resourceSpans[0].scopeSpans[0].spans.find(s => s.name === 'game').attributes;
-    console.log(`wrote docs/sample-trace.json: ${game['game.result']}, ${game['stack.final_size']} stacked, Brier ${game['brier.score']}`);
+    const spans = t.resourceSpans[0].scopeSpans[0].spans, val = v => Object.values(v)[0];
+    const game = Object.fromEntries(spans.find(s => s.name === 'game').attributes.map(a => [a.key, val(a.value)]));
+    console.log(`wrote docs/sample-trace.json: session ${game['session.id']}, ${new Set(spans.map(s => s.traceId)).size} traces, ` +
+      `${game['game.result']}, ${game['stack.final_size']} stacked, Brier ${game['brier.score'] ?? 0}`);
     process.exit(0);
   })
 };

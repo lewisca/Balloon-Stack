@@ -188,7 +188,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
             <button id="bDownload">Download trace</button>
           </div>
           <textarea id="traceOut" class="traceout" readonly hidden aria-label="Trace JSON"></textarea>
-          <p class="hint">Span records with trace and parent ids, shaped like OpenTelemetry so they can be sent to a collector.</p>
+          <p class="hint">OTLP JSON: one trace per move, grouped into a session by session.id. Send it to any OpenTelemetry collector.</p>
         </div>
       </section>
     </div>
@@ -318,26 +318,43 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readTheme)
 new MutationObserver(readTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 (function fit() { const d = Math.min(window.devicePixelRatio || 1, 2); cv.width = 360 * d; cv.height = 600 * d; ctx.setTransform(d, 0, 0, d, 0, 0); })();
 
-// ---------- Tracing (OpenTelemetry-shaped spans) ----------
+// ---------- Tracing (OpenTelemetry spans) ----------
+// A game is a session (session.id on every span); each balloon placement is its own trace rooted at a `move` span.
+// The game's start-to-end summary is one more trace in the same session.
 const hex = n => Array.from({ length: n }, () => Math.floor(rng() * 16).toString(16)).join('');
 const nowNs = () => String(Math.round((performance.timeOrigin + performance.now()) * 1e6));
+// OTLP/JSON value encoding
+const anyValue = v => typeof v === 'boolean' ? { boolValue: v }
+  : typeof v === 'number' ? { doubleValue: v } // one type per key, so p_hold = 1 and p_hold = 0.97 compare cleanly
+  : Array.isArray(v) ? { arrayValue: { values: v.map(anyValue) } }
+  : v && typeof v === 'object' ? { kvlistValue: { values: keyValues(v) } }
+  : { stringValue: String(v) };
+const keyValues = o => Object.entries(o).filter(([, v]) => v !== null && v !== undefined).map(([key, v]) => ({ key, value: anyValue(v) }));
+const STATUS = { UNSET: 0, OK: 1, ERROR: 2 };
 const Tr = {
   spans: [],
   start(name, parent, attrs) {
-    const s = { traceId: G.traceId, spanId: hex(16), parentSpanId: parent ? parent.spanId : null, name,
-                startTimeUnixNano: nowNs(), endTimeUnixNano: null, attributes: Object.assign({}, attrs), events: [], status: { code: 'UNSET' } };
+    const s = { traceId: parent ? parent.traceId : hex(32), spanId: hex(16), parentSpanId: parent ? parent.spanId : null, name,
+                startTimeUnixNano: nowNs(), endTimeUnixNano: null, attributes: Object.assign({ 'session.id': G.sessionId }, attrs), events: [], status: 'UNSET' };
     this.spans.push(s); return s;
   },
   end(s, attrs, ok) {
     if (!s || s.endTimeUnixNano) return;
     Object.assign(s.attributes, attrs || {});
     s.endTimeUnixNano = nowNs();
-    s.status = { code: ok === false ? 'ERROR' : 'OK' };
+    s.status = ok === false ? 'ERROR' : 'OK';
   },
   event(s, name, attrs) { if (s) s.events.push({ name, timeUnixNano: nowNs(), attributes: attrs || {} }); },
+  // Strict OTLP/JSON, ready to POST to any collector's /v1/traces. Spans still open are closed at export time.
   export() {
-    return { resourceSpans: [{ resource: { attributes: { 'service.name': 'balloon-stack', 'service.version': '1.0' } },
-      scopeSpans: [{ scope: { name: 'balloon-stack.forecaster' }, spans: this.spans }] }] };
+    const now = nowNs();
+    const spans = this.spans.map(s => Object.assign({ traceId: s.traceId, spanId: s.spanId }, s.parentSpanId ? { parentSpanId: s.parentSpanId } : {}, {
+      name: s.name, kind: 1, startTimeUnixNano: s.startTimeUnixNano, endTimeUnixNano: s.endTimeUnixNano || now,
+      attributes: keyValues(s.attributes),
+      events: s.events.map(e => ({ name: e.name, timeUnixNano: e.timeUnixNano, attributes: keyValues(e.attributes) })),
+      status: { code: STATUS[s.status] } }));
+    return { resourceSpans: [{ resource: { attributes: keyValues({ 'service.name': 'balloon-stack', 'service.version': '1.1' }) },
+      scopeSpans: [{ scope: { name: 'balloon-stack.forecaster' }, spans }] }] };
   }
 };
 const r3 = v => Math.round(v * 1000) / 1000;
@@ -355,7 +372,7 @@ function newGame() {
   G = { mode: vs ? 'vs' : 'solo', ground: makeBalloons(rng, N), stack: [], turn: vs ? starter : 'you',
         sel: null, slot: null, fc: new Map(), squeezed: false, busy: false, over: null,
         calib: [], placed: { you: 0, ai: 0 }, engine: makeEngine(M), bodies: new Map(),
-        settle: 0, pending: null, wobble: null, reveal: false, parts: [], pops: [], popped: new Set(), traceId: hex(32), move: 0, turnSpan: null };
+        settle: 0, pending: null, wobble: null, reveal: false, parts: [], pops: [], popped: new Set(), sessionId: hex(32), move: 0, turnSpan: null };
   Tr.spans = [];
   G.gameSpan = Tr.start('game', null, { 'game.mode': G.mode, 'game.balloons': N, 'game.first_turn': G.turn });
   layoutGround();
@@ -367,7 +384,7 @@ function newGame() {
 function turnSpan(actor) {
   if (!G.turnSpan) {
     G.move++;
-    G.turnSpan = Tr.start('move', G.gameSpan, { 'move.number': G.move, 'move.actor': actor, 'stack.size': G.stack.length });
+    G.turnSpan = Tr.start('move', null, { 'move.number': G.move, 'move.actor': actor, 'stack.size': G.stack.length });
     Tr.event(G.turnSpan, 'beliefs.snapshot', { balloons: beliefsOf(G.ground) });
   }
   return G.turnSpan;
@@ -727,8 +744,8 @@ function renderInspector() {
     });
     m.events.filter(e => e.name === 'ai.decision').forEach(e => lines.push(`<div><b>ai.decision</b> ${esc(e.attributes.policy)} → #${e.attributes.chosen_balloon}@${e.attributes.chosen_spot}</div>`));
     const brier = a['brier.contribution'] !== undefined ? `<span class="k">brier ${a['brier.contribution']}</span>` : '';
-    return `<li><details><summary><span>${head}</span>${brier}</summary><div class="kids">${lines.join('')}<div class="k">span ${m.spanId} · parent ${m.parentSpanId}</div></div></details></li>`;
-  }).join('') : '<li class="muted">Each move becomes a span with child spans for squeezes, the forecast and the physics outcome.</li>';
+    return `<li><details><summary><span>${head}</span>${brier}</summary><div class="kids">${lines.join('')}<div class="k">trace ${m.traceId} · span ${m.spanId}</div></div></details></li>`;
+  }).join('') : '<li class="muted">Each move becomes its own trace, with child spans for squeezes, the forecast and the physics outcome. The game is the session.</li>';
 }
 
 // ---------- Input ----------
