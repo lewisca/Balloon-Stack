@@ -331,16 +331,33 @@ const anyValue = v => typeof v === 'boolean' ? { boolValue: v }
   : { stringValue: String(v) };
 const keyValues = o => Object.entries(o).filter(([, v]) => v !== null && v !== undefined).map(([key, v]) => ({ key, value: anyValue(v) }));
 const STATUS = { UNSET: 0, OK: 1, ERROR: 2 };
+// OpenInference conventions, so LLM-observability tools (Arize, Phoenix) fill in Kind, Input and Output.
+const pct = v => Math.round(v * 100) + '%', pm = (m, v) => `${m.toFixed(2)} ± ${Math.sqrt(v).toFixed(2)}`;
+const OI = {
+  game: { kind: 'AGENT', in: a => `${a['game.mode']} game, ${a['game.balloons']} balloons, ${a['game.first_turn'] === 'ai' ? 'AI' : 'player'} first`,
+          out: a => `${a['game.result']}: ${a['stack.final_size'] ?? 0} stacked` + (a['brier.score'] != null ? `, Brier ${a['brier.score'].toFixed(3)}` : '') },
+  move: { kind: 'CHAIN', in: a => `Move ${a['move.number']} by ${a['move.actor'] === 'ai' ? 'AI' : 'player'}: ${a['stack.size']} stacked`,
+          out: a => `#${a['balloon.id']} → spot ${a.spot}, P(hold) ${pct(a['prediction.p_hold'])} over ${a['prediction.rollouts']} rollouts, ${a['outcome.held'] ? 'held' : 'spilled'}` },
+  squeeze: { kind: 'TOOL', in: a => `Squeeze #${a['balloon.id']}: prior grip ${pm(a['prior.grip_mean'], a['prior.grip_var'])}, bounce ${pm(a['prior.bounce_mean'], a['prior.bounce_var'])}`,
+             out: a => `Read grip ${a['reading.grip']}, bounce ${a['reading.bounce']} → posterior grip ${pm(a['posterior.grip_mean'], a['posterior.grip_var'])}, bounce ${pm(a['posterior.bounce_mean'], a['posterior.bounce_var'])}` },
+  forecast: { kind: 'EVALUATOR', in: a => `${a['candidates.count']} candidate spots, ${a['rollouts.total']} physics rollouts`,
+              out: a => a.candidates && a.candidates.length ? `Best: #${a.candidates[0].balloon} → spot ${a.candidates[0].spot}, P(hold) ${pct(a.candidates[0].p_hold)}` : 'No candidates' },
+  'physics.settle': { kind: 'TOOL', in: a => `Drop #${a['balloon.id']} in spot ${a.spot}, simulate ${a.steps} steps`,
+                      out: a => a['outcome.held'] ? 'Held' : `Spilled #${a['outcome.spilled_ids'].join(', #')}` }
+};
 const Tr = {
   spans: [],
   start(name, parent, attrs) {
     const s = { traceId: parent ? parent.traceId : hex(32), spanId: hex(16), parentSpanId: parent ? parent.spanId : null, name,
                 startTimeUnixNano: nowNs(), endTimeUnixNano: null, attributes: Object.assign({ 'session.id': G.sessionId }, attrs), events: [], status: 'UNSET' };
+    const oi = OI[name];
+    if (oi) Object.assign(s.attributes, { 'openinference.span.kind': oi.kind, 'input.value': oi.in(s.attributes) });
     this.spans.push(s); return s;
   },
   end(s, attrs, ok) {
     if (!s || s.endTimeUnixNano) return;
     Object.assign(s.attributes, attrs || {});
+    if (OI[s.name] && s.attributes['game.result'] !== 'abandoned') s.attributes['output.value'] = OI[s.name].out(s.attributes);
     s.endTimeUnixNano = nowNs();
     s.status = ok === false ? 'ERROR' : 'OK';
   },

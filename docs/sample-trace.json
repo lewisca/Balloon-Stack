@@ -28,8 +28,8 @@
               "spanId": "b1bed7d6b73ca0d5",
               "name": "game",
               "kind": 1,
-              "startTimeUnixNano": "1792423366489090600",
-              "endTimeUnixNano": "1792423406078405400",
+              "startTimeUnixNano": "1792440739543552000",
+              "endTimeUnixNano": "1792440776927119600",
               "attributes": [
                 {
                   "key": "session.id",
@@ -53,6 +53,18 @@
                   "key": "game.first_turn",
                   "value": {
                     "stringValue": "ai"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "AGENT"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "solo game, 11 balloons, AI first"
                   }
                 },
                 {
@@ -351,6 +363,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "won: 11 stacked, Brier 0.000"
+                  }
                 }
               ],
               "events": [],
@@ -363,8 +381,8 @@
               "spanId": "7a612d3e6439753e",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423366498089000",
-              "endTimeUnixNano": "1792423367999583500",
+              "startTimeUnixNano": "1792440739551107000",
+              "endTimeUnixNano": "1792440740050598000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -388,6 +406,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 0
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 1 by AI: 0 stacked"
                   }
                 },
                 {
@@ -425,12 +455,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#2 → spot 1, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423366498545400",
+                  "timeUnixNano": "1792440739551618800",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -841,7 +877,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423367950332400",
+                  "timeUnixNano": "1792440740026626600",
                   "attributes": [
                     {
                       "key": "policy",
@@ -898,8 +934,8 @@
               "parentSpanId": "7a612d3e6439753e",
               "name": "squeeze",
               "kind": 1,
-              "startTimeUnixNano": "1792423366499003600",
-              "endTimeUnixNano": "1792423366499470000",
+              "startTimeUnixNano": "1792440739552018400",
+              "endTimeUnixNano": "1792440739552573400",
               "attributes": [
                 {
                   "key": "session.id",
@@ -935,6 +971,18 @@
                   "key": "prior.bounce_var",
                   "value": {
                     "doubleValue": 0.063
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Squeeze #1: prior grip 0.50 ± 0.25, bounce 0.50 ± 0.25"
                   }
                 },
                 {
@@ -990,6 +1038,12 @@
                   "value": {
                     "doubleValue": 0.017
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Read grip 0.237, bounce 0.638 → posterior grip 0.31 ± 0.13, bounce 0.60 ± 0.13"
+                  }
                 }
               ],
               "events": [],
@@ -1003,8 +1057,8 @@
               "parentSpanId": "7a612d3e6439753e",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423367952453400",
-              "endTimeUnixNano": "1792423367952500700",
+              "startTimeUnixNano": "1792440740028386300",
+              "endTimeUnixNano": "1792440740028726300",
               "attributes": [
                 {
                   "key": "session.id",
@@ -1022,6 +1076,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -1662,6 +1728,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #2 → spot 1, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -1675,8 +1747,8 @@
               "parentSpanId": "7a612d3e6439753e",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423367953108500",
-              "endTimeUnixNano": "1792423367999487200",
+              "startTimeUnixNano": "1792440740029122300",
+              "endTimeUnixNano": "1792440740050479600",
               "attributes": [
                 {
                   "key": "session.id",
@@ -1703,6 +1775,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #2 in spot 1, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -1714,6 +1798,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -1727,8 +1817,8 @@
               "spanId": "5edbb41d4e1af87d",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423368000579800",
-              "endTimeUnixNano": "1792423370480282400",
+              "startTimeUnixNano": "1792440740051537200",
+              "endTimeUnixNano": "1792440741470761500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -1752,6 +1842,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 1
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 2 by AI: 1 stacked"
                   }
                 },
                 {
@@ -1789,12 +1891,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#4 → spot 1, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423368000652500",
+                  "timeUnixNano": "1792440740051582700",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -2169,7 +2277,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423370418183700",
+                  "timeUnixNano": "1792440741417786600",
                   "attributes": [
                     {
                       "key": "policy",
@@ -2226,8 +2334,8 @@
               "parentSpanId": "5edbb41d4e1af87d",
               "name": "squeeze",
               "kind": 1,
-              "startTimeUnixNano": "1792423368000745500",
-              "endTimeUnixNano": "1792423368000817400",
+              "startTimeUnixNano": "1792440740051633200",
+              "endTimeUnixNano": "1792440740051702500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -2263,6 +2371,18 @@
                   "key": "prior.bounce_var",
                   "value": {
                     "doubleValue": 0.063
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Squeeze #3: prior grip 0.50 ± 0.25, bounce 0.50 ± 0.25"
                   }
                 },
                 {
@@ -2318,6 +2438,12 @@
                   "value": {
                     "doubleValue": 0.017
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Read grip 0.377, bounce 0.593 → posterior grip 0.41 ± 0.13, bounce 0.57 ± 0.13"
+                  }
                 }
               ],
               "events": [],
@@ -2331,8 +2457,8 @@
               "parentSpanId": "5edbb41d4e1af87d",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423370420153300",
-              "endTimeUnixNano": "1792423370420189000",
+              "startTimeUnixNano": "1792440741418691300",
+              "endTimeUnixNano": "1792440741418744600",
               "attributes": [
                 {
                   "key": "session.id",
@@ -2350,6 +2476,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -2990,6 +3128,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #4 → spot 1, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -3003,8 +3147,8 @@
               "parentSpanId": "5edbb41d4e1af87d",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423370420536300",
-              "endTimeUnixNano": "1792423370480216800",
+              "startTimeUnixNano": "1792440741419159600",
+              "endTimeUnixNano": "1792440741470686500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -3031,6 +3175,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #4 in spot 1, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -3042,6 +3198,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -3055,8 +3217,8 @@
               "spanId": "66e3b789af583deb",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423370481209900",
-              "endTimeUnixNano": "1792423372424343000",
+              "startTimeUnixNano": "1792440741472061700",
+              "endTimeUnixNano": "1792440742962462500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -3080,6 +3242,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 2
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 3 by AI: 2 stacked"
                   }
                 },
                 {
@@ -3117,12 +3291,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#5 → spot 2, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423370481333200",
+                  "timeUnixNano": "1792440741472946400",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -3461,7 +3641,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423372404300800",
+                  "timeUnixNano": "1792440742937221000",
                   "attributes": [
                     {
                       "key": "policy",
@@ -3518,8 +3698,8 @@
               "parentSpanId": "66e3b789af583deb",
               "name": "squeeze",
               "kind": 1,
-              "startTimeUnixNano": "1792423370481426400",
-              "endTimeUnixNano": "1792423370481506800",
+              "startTimeUnixNano": "1792440741473066200",
+              "endTimeUnixNano": "1792440741473356500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -3555,6 +3735,18 @@
                   "key": "prior.bounce_var",
                   "value": {
                     "doubleValue": 0.063
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Squeeze #5: prior grip 0.50 ± 0.25, bounce 0.50 ± 0.25"
                   }
                 },
                 {
@@ -3610,6 +3802,12 @@
                   "value": {
                     "doubleValue": 0.017
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Read grip 0.551, bounce 0.339 → posterior grip 0.54 ± 0.13, bounce 0.38 ± 0.13"
+                  }
                 }
               ],
               "events": [],
@@ -3623,8 +3821,8 @@
               "parentSpanId": "66e3b789af583deb",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423372405143000",
-              "endTimeUnixNano": "1792423372405160400",
+              "startTimeUnixNano": "1792440742937714200",
+              "endTimeUnixNano": "1792440742937750000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -3642,6 +3840,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -4282,6 +4492,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #5 → spot 2, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -4295,8 +4511,8 @@
               "parentSpanId": "66e3b789af583deb",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423372405298000",
-              "endTimeUnixNano": "1792423372424324600",
+              "startTimeUnixNano": "1792440742937895400",
+              "endTimeUnixNano": "1792440742962424600",
               "attributes": [
                 {
                   "key": "session.id",
@@ -4323,6 +4539,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #5 in spot 2, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -4334,6 +4562,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -4347,8 +4581,8 @@
               "spanId": "8823d6d611e9c4cb",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423372425405200",
-              "endTimeUnixNano": "1792423374281570300",
+              "startTimeUnixNano": "1792440742963939800",
+              "endTimeUnixNano": "1792440746140574700",
               "attributes": [
                 {
                   "key": "session.id",
@@ -4372,6 +4606,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 3
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 4 by AI: 3 stacked"
                   }
                 },
                 {
@@ -4409,12 +4655,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#7 → spot 1, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423372425447000",
+                  "timeUnixNano": "1792440742963982600",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -4717,7 +4969,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423374259857000",
+                  "timeUnixNano": "1792440746115537400",
                   "attributes": [
                     {
                       "key": "policy",
@@ -4774,8 +5026,8 @@
               "parentSpanId": "8823d6d611e9c4cb",
               "name": "squeeze",
               "kind": 1,
-              "startTimeUnixNano": "1792423372425491700",
-              "endTimeUnixNano": "1792423372425552600",
+              "startTimeUnixNano": "1792440742964023800",
+              "endTimeUnixNano": "1792440742964093000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -4811,6 +5063,18 @@
                   "key": "prior.bounce_var",
                   "value": {
                     "doubleValue": 0.063
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Squeeze #6: prior grip 0.50 ± 0.25, bounce 0.50 ± 0.25"
                   }
                 },
                 {
@@ -4866,6 +5130,12 @@
                   "value": {
                     "doubleValue": 0.017
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Read grip 0.01, bounce 0.333 → posterior grip 0.14 ± 0.13, bounce 0.38 ± 0.13"
+                  }
                 }
               ],
               "events": [],
@@ -4879,8 +5149,8 @@
               "parentSpanId": "8823d6d611e9c4cb",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423374261681000",
-              "endTimeUnixNano": "1792423374261704400",
+              "startTimeUnixNano": "1792440746116696600",
+              "endTimeUnixNano": "1792440746116719000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -4898,6 +5168,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -5538,6 +5820,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #7 → spot 1, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -5551,8 +5839,8 @@
               "parentSpanId": "8823d6d611e9c4cb",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423374262001700",
-              "endTimeUnixNano": "1792423374281526500",
+              "startTimeUnixNano": "1792440746116870100",
+              "endTimeUnixNano": "1792440746140531700",
               "attributes": [
                 {
                   "key": "session.id",
@@ -5579,6 +5867,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #7 in spot 1, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -5590,6 +5890,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -5603,8 +5909,8 @@
               "spanId": "025809954168a280",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423374282125000",
-              "endTimeUnixNano": "1792423376989257000",
+              "startTimeUnixNano": "1792440746141806000",
+              "endTimeUnixNano": "1792440749021144000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -5628,6 +5934,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 4
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 5 by AI: 4 stacked"
                   }
                 },
                 {
@@ -5665,12 +5983,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#9 → spot 2, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423374282150100",
+                  "timeUnixNano": "1792440746141845000",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -5937,7 +6261,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423376956150300",
+                  "timeUnixNano": "1792440748981406200",
                   "attributes": [
                     {
                       "key": "policy",
@@ -5994,8 +6318,8 @@
               "parentSpanId": "025809954168a280",
               "name": "squeeze",
               "kind": 1,
-              "startTimeUnixNano": "1792423374282201600",
-              "endTimeUnixNano": "1792423374282295600",
+              "startTimeUnixNano": "1792440746141913900",
+              "endTimeUnixNano": "1792440746142087200",
               "attributes": [
                 {
                   "key": "session.id",
@@ -6031,6 +6355,18 @@
                   "key": "prior.bounce_var",
                   "value": {
                     "doubleValue": 0.063
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Squeeze #8: prior grip 0.50 ± 0.25, bounce 0.50 ± 0.25"
                   }
                 },
                 {
@@ -6086,6 +6422,12 @@
                   "value": {
                     "doubleValue": 0.017
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Read grip 0.034, bounce 0 → posterior grip 0.16 ± 0.13, bounce 0.13 ± 0.13"
+                  }
                 }
               ],
               "events": [],
@@ -6099,8 +6441,8 @@
               "parentSpanId": "025809954168a280",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423376957134300",
-              "endTimeUnixNano": "1792423376957145000",
+              "startTimeUnixNano": "1792440748982694700",
+              "endTimeUnixNano": "1792440748982736400",
               "attributes": [
                 {
                   "key": "session.id",
@@ -6118,6 +6460,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -6758,6 +7112,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #9 → spot 2, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -6771,8 +7131,8 @@
               "parentSpanId": "025809954168a280",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423376957274400",
-              "endTimeUnixNano": "1792423376989229800",
+              "startTimeUnixNano": "1792440748983016200",
+              "endTimeUnixNano": "1792440749021098500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -6799,6 +7159,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #9 in spot 2, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -6810,6 +7182,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -6823,8 +7201,8 @@
               "spanId": "02f407d08caf3f8c",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423376990013400",
-              "endTimeUnixNano": "1792423380400583000",
+              "startTimeUnixNano": "1792440749021682700",
+              "endTimeUnixNano": "1792440752402975000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -6848,6 +7226,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 5
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 6 by AI: 5 stacked"
                   }
                 },
                 {
@@ -6885,12 +7275,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#10 → spot 3, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423376990038000",
+                  "timeUnixNano": "1792440749021720600",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -7121,7 +7517,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423380371083000",
+                  "timeUnixNano": "1792440752357653800",
                   "attributes": [
                     {
                       "key": "policy",
@@ -7178,8 +7574,8 @@
               "parentSpanId": "02f407d08caf3f8c",
               "name": "squeeze",
               "kind": 1,
-              "startTimeUnixNano": "1792423376990068000",
-              "endTimeUnixNano": "1792423376990100700",
+              "startTimeUnixNano": "1792440749021762000",
+              "endTimeUnixNano": "1792440749021834000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -7215,6 +7611,18 @@
                   "key": "prior.bounce_var",
                   "value": {
                     "doubleValue": 0.063
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Squeeze #10: prior grip 0.50 ± 0.25, bounce 0.50 ± 0.25"
                   }
                 },
                 {
@@ -7270,6 +7678,12 @@
                   "value": {
                     "doubleValue": 0.017
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Read grip 0.841, bounce 1 → posterior grip 0.75 ± 0.13, bounce 0.87 ± 0.13"
+                  }
                 }
               ],
               "events": [],
@@ -7283,8 +7697,8 @@
               "parentSpanId": "02f407d08caf3f8c",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423380372079000",
-              "endTimeUnixNano": "1792423380372090400",
+              "startTimeUnixNano": "1792440752358682000",
+              "endTimeUnixNano": "1792440752358700000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -7302,6 +7716,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -7942,6 +8368,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #10 → spot 3, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -7955,8 +8387,8 @@
               "parentSpanId": "02f407d08caf3f8c",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423380372219100",
-              "endTimeUnixNano": "1792423380400562000",
+              "startTimeUnixNano": "1792440752358832000",
+              "endTimeUnixNano": "1792440752402930400",
               "attributes": [
                 {
                   "key": "session.id",
@@ -7983,6 +8415,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #10 in spot 3, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -7994,6 +8438,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -8007,8 +8457,8 @@
               "spanId": "180975b523830211",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423380401069600",
-              "endTimeUnixNano": "1792423384928674300",
+              "startTimeUnixNano": "1792440752403688000",
+              "endTimeUnixNano": "1792440756748852500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -8032,6 +8482,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 6
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 7 by AI: 6 stacked"
                   }
                 },
                 {
@@ -8069,12 +8531,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#11 → spot 7, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423380401086200",
+                  "timeUnixNano": "1792440752403725800",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -8269,7 +8737,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423384868271400",
+                  "timeUnixNano": "1792440756706649900",
                   "attributes": [
                     {
                       "key": "policy",
@@ -8326,8 +8794,8 @@
               "parentSpanId": "180975b523830211",
               "name": "squeeze",
               "kind": 1,
-              "startTimeUnixNano": "1792423380401118500",
-              "endTimeUnixNano": "1792423380401162000",
+              "startTimeUnixNano": "1792440752403791400",
+              "endTimeUnixNano": "1792440752403932700",
               "attributes": [
                 {
                   "key": "session.id",
@@ -8363,6 +8831,18 @@
                   "key": "prior.bounce_var",
                   "value": {
                     "doubleValue": 0.063
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Squeeze #11: prior grip 0.50 ± 0.25, bounce 0.50 ± 0.25"
                   }
                 },
                 {
@@ -8418,6 +8898,12 @@
                   "value": {
                     "doubleValue": 0.017
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Read grip 0.632, bounce 0.905 → posterior grip 0.60 ± 0.13, bounce 0.80 ± 0.13"
+                  }
                 }
               ],
               "events": [],
@@ -8431,8 +8917,8 @@
               "parentSpanId": "180975b523830211",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423384869219800",
-              "endTimeUnixNano": "1792423384869238800",
+              "startTimeUnixNano": "1792440756707723300",
+              "endTimeUnixNano": "1792440756707751700",
               "attributes": [
                 {
                   "key": "session.id",
@@ -8450,6 +8936,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -9090,6 +9588,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #11 → spot 7, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -9103,8 +9607,8 @@
               "parentSpanId": "180975b523830211",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423384869511200",
-              "endTimeUnixNano": "1792423384928635600",
+              "startTimeUnixNano": "1792440756708020200",
+              "endTimeUnixNano": "1792440756748822800",
               "attributes": [
                 {
                   "key": "session.id",
@@ -9131,6 +9635,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #11 in spot 7, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -9142,6 +9658,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -9155,8 +9677,8 @@
               "spanId": "1d7a401e2d42cc45",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423384929444600",
-              "endTimeUnixNano": "1792423390903429000",
+              "startTimeUnixNano": "1792440756749514000",
+              "endTimeUnixNano": "1792440761921737200",
               "attributes": [
                 {
                   "key": "session.id",
@@ -9180,6 +9702,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 7
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 8 by AI: 7 stacked"
                   }
                 },
                 {
@@ -9217,12 +9751,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#3 → spot 1, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423384929487600",
+                  "timeUnixNano": "1792440756749530600",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -9381,7 +9921,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423390855238400",
+                  "timeUnixNano": "1792440761870615600",
                   "attributes": [
                     {
                       "key": "policy",
@@ -9438,8 +9978,8 @@
               "parentSpanId": "1d7a401e2d42cc45",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423390856280600",
-              "endTimeUnixNano": "1792423390856296000",
+              "startTimeUnixNano": "1792440761871631400",
+              "endTimeUnixNano": "1792440761871651300",
               "attributes": [
                 {
                   "key": "session.id",
@@ -9457,6 +9997,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -10097,6 +10649,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #3 → spot 1, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -10110,8 +10668,8 @@
               "parentSpanId": "1d7a401e2d42cc45",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423390856501800",
-              "endTimeUnixNano": "1792423390903400400",
+              "startTimeUnixNano": "1792440761871788500",
+              "endTimeUnixNano": "1792440761921700600",
               "attributes": [
                 {
                   "key": "session.id",
@@ -10138,6 +10696,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #3 in spot 1, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -10149,6 +10719,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -10162,8 +10738,8 @@
               "spanId": "f92c0320bf6c52c5",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423390903987000",
-              "endTimeUnixNano": "1792423397315595500",
+              "startTimeUnixNano": "1792440761922468000",
+              "endTimeUnixNano": "1792440768067888000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -10187,6 +10763,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 8
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 9 by AI: 8 stacked"
                   }
                 },
                 {
@@ -10224,12 +10812,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#1 → spot 1, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423390904008000",
+                  "timeUnixNano": "1792440761922491100",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -10352,7 +10946,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423397263033300",
+                  "timeUnixNano": "1792440768026539300",
                   "attributes": [
                     {
                       "key": "policy",
@@ -10409,8 +11003,8 @@
               "parentSpanId": "f92c0320bf6c52c5",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423397264119300",
-              "endTimeUnixNano": "1792423397264130800",
+              "startTimeUnixNano": "1792440768027471000",
+              "endTimeUnixNano": "1792440768027487500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -10428,6 +11022,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 240
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "21 candidate spots, 240 physics rollouts"
                   }
                 },
                 {
@@ -11068,6 +11674,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #1 → spot 1, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -11081,8 +11693,8 @@
               "parentSpanId": "f92c0320bf6c52c5",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423397264293000",
-              "endTimeUnixNano": "1792423397315573200",
+              "startTimeUnixNano": "1792440768027626000",
+              "endTimeUnixNano": "1792440768067862500",
               "attributes": [
                 {
                   "key": "session.id",
@@ -11109,6 +11721,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #1 in spot 1, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -11120,6 +11744,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -11133,8 +11763,8 @@
               "spanId": "e9da27107b3519c1",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423397315982800",
-              "endTimeUnixNano": "1792423402399342000",
+              "startTimeUnixNano": "1792440768068589000",
+              "endTimeUnixNano": "1792440772991197400",
               "attributes": [
                 {
                   "key": "session.id",
@@ -11158,6 +11788,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 9
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 10 by AI: 9 stacked"
                   }
                 },
                 {
@@ -11195,12 +11837,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#8 → spot 1, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423397316003800",
+                  "timeUnixNano": "1792440768068611600",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -11287,7 +11935,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423402351044400",
+                  "timeUnixNano": "1792440772928070400",
                   "attributes": [
                     {
                       "key": "policy",
@@ -11341,8 +11989,8 @@
               "parentSpanId": "e9da27107b3519c1",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423402352195800",
-              "endTimeUnixNano": "1792423402352208000",
+              "startTimeUnixNano": "1792440772928686600",
+              "endTimeUnixNano": "1792440772928716800",
               "attributes": [
                 {
                   "key": "session.id",
@@ -11360,6 +12008,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 184
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "14 candidate spots, 184 physics rollouts"
                   }
                 },
                 {
@@ -11790,6 +12450,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #8 → spot 1, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -11803,8 +12469,8 @@
               "parentSpanId": "e9da27107b3519c1",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423402352385500",
-              "endTimeUnixNano": "1792423402399313000",
+              "startTimeUnixNano": "1792440772928930300",
+              "endTimeUnixNano": "1792440772991159300",
               "attributes": [
                 {
                   "key": "session.id",
@@ -11831,6 +12497,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #8 in spot 1, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -11842,6 +12520,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],
@@ -11855,8 +12539,8 @@
               "spanId": "2f426d5d330d39ab",
               "name": "move",
               "kind": 1,
-              "startTimeUnixNano": "1792423402400248300",
-              "endTimeUnixNano": "1792423406077912300",
+              "startTimeUnixNano": "1792440772991769300",
+              "endTimeUnixNano": "1792440776926604000",
               "attributes": [
                 {
                   "key": "session.id",
@@ -11880,6 +12564,18 @@
                   "key": "stack.size",
                   "value": {
                     "doubleValue": 10
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Move 11 by AI: 10 stacked"
                   }
                 },
                 {
@@ -11917,12 +12613,18 @@
                   "value": {
                     "doubleValue": 0
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "#6 → spot 1, P(hold) 100% over 32 rollouts, held"
+                  }
                 }
               ],
               "events": [
                 {
                   "name": "beliefs.snapshot",
-                  "timeUnixNano": "1792423402400259000",
+                  "timeUnixNano": "1792440772991784200",
                   "attributes": [
                     {
                       "key": "balloons",
@@ -11973,7 +12675,7 @@
                 },
                 {
                   "name": "ai.decision",
-                  "timeUnixNano": "1792423406012038400",
+                  "timeUnixNano": "1792440776860369400",
                   "attributes": [
                     {
                       "key": "policy",
@@ -12024,8 +12726,8 @@
               "parentSpanId": "2f426d5d330d39ab",
               "name": "forecast",
               "kind": 1,
-              "startTimeUnixNano": "1792423406013212000",
-              "endTimeUnixNano": "1792423406013227500",
+              "startTimeUnixNano": "1792440776861430300",
+              "endTimeUnixNano": "1792440776861448700",
               "attributes": [
                 {
                   "key": "session.id",
@@ -12043,6 +12745,18 @@
                   "key": "rollouts.total",
                   "value": {
                     "doubleValue": 128
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "EVALUATOR"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "7 candidate spots, 128 physics rollouts"
                   }
                 },
                 {
@@ -12263,6 +12977,12 @@
                       ]
                     }
                   }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Best: #6 → spot 1, P(hold) 100%"
+                  }
                 }
               ],
               "events": [],
@@ -12276,8 +12996,8 @@
               "parentSpanId": "2f426d5d330d39ab",
               "name": "physics.settle",
               "kind": 1,
-              "startTimeUnixNano": "1792423406013456000",
-              "endTimeUnixNano": "1792423406077896400",
+              "startTimeUnixNano": "1792440776861594000",
+              "endTimeUnixNano": "1792440776926581800",
               "attributes": [
                 {
                   "key": "session.id",
@@ -12304,6 +13024,18 @@
                   }
                 },
                 {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "Drop #6 in spot 1, simulate 210 steps"
+                  }
+                },
+                {
                   "key": "outcome.held",
                   "value": {
                     "boolValue": true
@@ -12315,6 +13047,12 @@
                     "arrayValue": {
                       "values": []
                     }
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "Held"
                   }
                 }
               ],

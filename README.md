@@ -141,6 +141,8 @@ Any OpenTelemetry backend works. To run one locally with [Jaeger](https://www.ja
 
 The exporter reads the standard OpenTelemetry environment variables, so a hosted backend only needs configuration. Arize groups each game's traces under **Sessions**, using `session.id`.
 
+Spans also carry [OpenInference](https://github.com/Arize-ai/openinference) attributes. `openinference.span.kind` marks `game` as AGENT, `move` as CHAIN, `squeeze` and `physics.settle` as TOOL, and `forecast` as EVALUATOR. `input.value` and `output.value` give a one-line summary of each span, such as `#5 → spot 2, P(hold) 100% over 32 rollouts, held`. Arize shows these in its Kind, Input and Output columns.
+
 **Arize AX.** Get your Space ID and API key from *Space Settings*:
 
 ```bash
