@@ -1,0 +1,74 @@
+<div class="wrap">
+  <header>
+    <h1>Balloon <span>Stack</span></h1>
+    <p class="tag">Jenga in reverse. Lift every balloon off the floor into the corner without letting one roll out.</p>
+  </header>
+  <div class="game">
+    <div class="stage">
+      <canvas id="cv" width="360" height="600" aria-label="Balloon stacking arena. Drag a balloon from the floor into the corner."></canvas>
+      <div class="banner" id="banner" hidden></div>
+    </div>
+    <div class="panel">
+      <div class="score">
+        <div class="player" id="pYou"><span class="who">You</span><span class="n" id="sYou">0 placed</span><span class="sub" id="tYou">Your turn</span></div>
+        <div class="player" id="pAi"><span class="who" id="aiWho">Floor</span><span class="n" id="sAi">11 left</span><span class="sub" id="tAi">Waiting</span></div>
+      </div>
+
+      <div class="card">
+        <div class="label" id="selTitle">Drag a balloon into the corner</div>
+        <p class="feel" id="feel">Balloons differ. Some cling to their neighbors, some bounce right off. Squeeze one before you place it to get a feel for it.</p>
+        <div class="btns">
+          <button id="bSqueeze" disabled>Squeeze it</button>
+          <button id="bPlace" class="primary" disabled hidden>Place here</button>
+        </div>
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+
+      <div class="card">
+        <span class="label">How to play</span>
+        <ul class="rules">
+          <li>Drag a balloon off the floor and let go over the corner. It settles where you drop it.</li>
+          <li>If any balloon rolls out past the lip, the stack falls. Get all 11 up to win.</li>
+          <li>One squeeze per turn. Grippy, soft balloons stack best.</li>
+        </ul>
+        <div class="mode" role="radiogroup" aria-label="Game mode">
+          <label class="toggle"><input type="radio" name="mode" id="mSolo" value="solo" checked> Solo: stack all 11 yourself</label>
+          <label class="toggle"><input type="radio" name="mode" id="mVs" value="vs"> Versus the AI: take turns. Spill one and you lose; place the last balloon and you win.</label>
+        </div>
+        <div class="btns"><button id="bNew">New game</button></div>
+      </div>
+
+      <label class="switch" for="cInspect">
+        <input type="checkbox" id="cInspect" role="switch">
+        <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+        <span><b>AI inspector</b><br><span class="muted">Show the forecaster's odds, beliefs and decision trace</span></span>
+      </label>
+
+      <section class="inspector" id="inspector" hidden>
+        <div class="card">
+          <div class="label" id="iTitle">Forecast</div>
+          <div class="odds"><span class="big" id="pBig">—</span><span class="ci" id="pCi">Pick up a balloon to see its odds for each spot.</span></div>
+          <div class="belief"><span>Grip</span><div class="meter" id="mGrip"><i></i><em></em></div><span class="v" id="vGrip">—</span></div>
+          <div class="belief"><span>Bounce</span><div class="meter" id="mBounce"><i></i><em></em></div><span class="v" id="vBounce">—</span></div>
+          <p class="hint">Each spot's odds come from physics simulations with the hidden values drawn from the model's beliefs. The shaded band is its uncertainty and the line its best guess. A squeeze is a noisy reading that narrows the band.</p>
+        </div>
+
+        <div class="card">
+          <div class="cal"><span class="label">Calibration</span><span class="brier" id="brier">Brier —</span></div>
+          <table class="calt" id="calt"><thead><tr><th>Forecast</th><th>Moves</th><th>Predicted</th><th>Held</th></tr></thead><tbody></tbody></table>
+          <p class="hint">A well-calibrated model's predicted and held columns match. Brier score: lower is better, 0.25 is a coin flip.</p>
+        </div>
+
+        <div class="card">
+          <div class="cal"><span class="label">Decision trace</span><span class="brier" id="tCount">0 spans</span></div>
+          <ol class="trace" id="trace"></ol>
+          <div class="btns">
+            <button id="bCopy">Copy trace JSON</button>
+          </div>
+          <textarea id="traceOut" class="traceout" readonly hidden aria-label="Trace JSON"></textarea>
+          <p class="hint">Span records with trace and parent ids, shaped like OpenTelemetry so they can be sent to a collector.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

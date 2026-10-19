@@ -1,0 +1,14 @@
+{
+  "name": "balloon-stack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reverse Jenga with balloons: a probabilistic AI demo with Monte Carlo physics forecasting.",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.js",
+    "check": "node headless/calibration-check.js"
+  },
+  "devDependencies": {
+    "matter-js": "0.19.0"
+  }
+}

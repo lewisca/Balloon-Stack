@@ -1,0 +1,756 @@
+<title>Balloon Stack</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Chivo:wght@400;600&family=Chivo+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: arena canvas on the left, forecast cockpit on the right; stacks on phones */
+:root {
+  --bg: #E9EDF1; --surface: #FFFFFF; --ink: #17202A; --muted: #5B6773; --line: #D3DAE1;
+  --accent: #E0691A; --accent-ink: #FFFFFF; --good: #1E8A4C; --warn: #C98A0B; --bad: #C8352D;
+  --wall: #F4F5F3; --wall-shade: #E2E5E3; --frame: #FFFFFF; --frame-edge: #C9CFCC; --planter: #B42A22; --floor: #8C7A66;
+  --f-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Chivo", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "Chivo Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11161B; --surface: #1A2128; --ink: #E7ECF0; --muted: #94A1AD; --line: #2B353F;
+  --accent: #F08A3C; --accent-ink: #1A1006; --good: #4CC27F; --warn: #E8B33A; --bad: #F06A5F;
+  --wall: #2A3036; --wall-shade: #232930; --frame: #39414A; --frame-edge: #4A535C; --planter: #8E241D; --floor: #4B4036;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #11161B; --surface: #1A2128; --ink: #E7ECF0; --muted: #94A1AD; --line: #2B353F;
+  --accent: #F08A3C; --accent-ink: #1A1006; --good: #4CC27F; --warn: #E8B33A; --bad: #F06A5F;
+  --wall: #2A3036; --wall-shade: #232930; --frame: #39414A; --frame-edge: #4A535C; --planter: #8E241D; --floor: #4B4036;
+  color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); line-height: 1.45; }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 20px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin-bottom: 14px; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 6vw, 42px); line-height: 1; margin: 0; letter-spacing: -0.01em; }
+h1 span { color: var(--accent); }
+.tag { color: var(--muted); font-size: 14px; margin: 0; max-width: 46ch; }
+.game { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 760px) { .game { grid-template-columns: minmax(0, 1fr); } }
+.stage { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+canvas { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; display: block; width: 100%; height: auto; aspect-ratio: 360 / 600; max-width: 100%; touch-action: manipulation; }
+.banner { position: absolute; left: 12px; right: 12px; top: 12px; padding: 10px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+.banner b { font-family: var(--f-display); font-size: 20px; display: block; line-height: 1.1; }
+.panel { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.score { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.player { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.player.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.player .who { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.player .n { font-family: var(--f-display); font-weight: 800; font-size: 22px; line-height: 1.1; }
+.player .sub { font-size: 12px; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.odds { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.odds .big { font-family: var(--f-display); font-weight: 800; font-size: 46px; line-height: 1; font-variant-numeric: tabular-nums; }
+.odds .ci { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.meter { height: 8px; border-radius: 4px; background: var(--line); position: relative; overflow: hidden; }
+.meter i { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: var(--accent); opacity: .85; }
+.meter em { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ink); }
+.belief { display: grid; grid-template-columns: 74px 1fr 64px; gap: 8px; align-items: center; font-size: 13px; }
+.belief .v { font-family: var(--f-mono); font-size: 12px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font: 600 14px var(--f-body); border-radius: 999px; padding: 10px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--ink); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.log { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; max-height: 190px; overflow-y: auto; }
+.log li { display: grid; grid-template-columns: 22px 1fr; gap: 6px; }
+.log .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
+.cal { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cal .brier { font-family: var(--f-mono); font-size: 13px; }
+.rules { font-size: 13px; color: var(--muted); margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.mode { display: flex; flex-direction: column; gap: 6px; }
+.mode .toggle { align-items: flex-start; }
+.mode input { margin-top: 2px; flex: none; }
+.feel { margin: 0; font-size: 14px; color: var(--muted); }
+.muted { color: var(--muted); font-size: 13px; }
+.switch { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; cursor: pointer; font-size: 14px; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch .track { flex: none; width: 40px; height: 24px; border-radius: 12px; background: var(--line); position: relative; transition: background .2s; }
+.switch .thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: left .2s; }
+.switch input:checked + .track { background: var(--accent); }
+.switch input:checked + .track .thumb { left: 19px; }
+.switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+.inspector { display: flex; flex-direction: column; gap: 14px; }
+.inspector .card { border-style: dashed; }
+.calt { width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+.calt th { text-align: left; font: 600 11px var(--f-body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 4px 0; border-bottom: 1px solid var(--line); }
+.calt td { padding: 5px 0; border-bottom: 1px solid var(--line); }
+.calt td.off { color: var(--bad); }
+.trace { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto; }
+.trace details { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.trace summary { cursor: pointer; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.trace summary .k { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.trace .bad { color: var(--bad); }
+.trace .kids { margin: 6px 0 2px; padding-left: 12px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 4px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); overflow-x: auto; }
+.trace .kids b { color: var(--ink); font-weight: 600; }
+.traceout { width: 100%; min-height: 140px; font: 11px var(--f-mono); background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px; box-sizing: border-box; }
+.status { font-size: 13px; min-height: 1.4em; }
+.toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.toggle input { accent-color: var(--accent); width: 16px; height: 16px; }
+.status.play { font-size: 15px; font-weight: 600; min-height: 1.5em; }
+.switch { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 14px; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch .track { width: 40px; height: 24px; border-radius: 12px; background: var(--line); position: relative; transition: background .15s; margin-top: 2px; }
+.switch .knob { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: left .15s; }
+.switch input:checked + .track { background: var(--accent); }
+.switch input:checked + .track .knob { left: 19px; }
+.switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.inspector { display: flex; flex-direction: column; gap: 14px; }
+.calgrid { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+.calrow { display: grid; grid-template-columns: 62px 1fr 74px; gap: 8px; align-items: center; font-variant-numeric: tabular-nums; }
+.calrow .bars { display: flex; flex-direction: column; gap: 2px; }
+.calrow .bars i { display: block; height: 6px; border-radius: 3px; }
+.calrow .bars i.pred { background: var(--muted); }
+.calrow .bars i.act { background: var(--accent); }
+.calrow .v { font-family: var(--f-mono); color: var(--muted); text-align: right; }
+.trace { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; font-size: 13px; }
+.trace details { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+.trace summary { cursor: pointer; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.trace summary .ok { color: var(--good); font-weight: 600; }
+.trace summary .bad { color: var(--bad); font-weight: 600; }
+.trace pre { font-family: var(--f-mono); font-size: 11px; white-space: pre-wrap; word-break: break-word; margin: 8px 0 2px; color: var(--muted); max-height: 220px; overflow: auto; }
+.traceout { width: 100%; min-height: 120px; font-family: var(--f-mono); font-size: 11px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px; box-sizing: border-box; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+<div class="wrap">
+  <header>
+    <h1>Balloon <span>Stack</span></h1>
+    <p class="tag">Jenga in reverse. Lift every balloon off the floor into the corner without letting one roll out.</p>
+  </header>
+  <div class="game">
+    <div class="stage">
+      <canvas id="cv" width="360" height="600" aria-label="Balloon stacking arena. Drag a balloon from the floor into the corner."></canvas>
+      <div class="banner" id="banner" hidden></div>
+    </div>
+    <div class="panel">
+      <div class="score">
+        <div class="player" id="pYou"><span class="who">You</span><span class="n" id="sYou">0 placed</span><span class="sub" id="tYou">Your turn</span></div>
+        <div class="player" id="pAi"><span class="who" id="aiWho">Floor</span><span class="n" id="sAi">11 left</span><span class="sub" id="tAi">Waiting</span></div>
+      </div>
+
+      <div class="card">
+        <div class="label" id="selTitle">Drag a balloon into the corner</div>
+        <p class="feel" id="feel">Balloons differ. Some cling to their neighbors, some bounce right off. Squeeze one before you place it to get a feel for it.</p>
+        <div class="btns">
+          <button id="bSqueeze" disabled>Squeeze it</button>
+          <button id="bPlace" class="primary" disabled hidden>Place here</button>
+        </div>
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+
+      <div class="card">
+        <span class="label">How to play</span>
+        <ul class="rules">
+          <li>Drag a balloon off the floor and let go over the corner. It settles where you drop it.</li>
+          <li>If any balloon rolls out past the lip, the stack falls. Get all 11 up to win.</li>
+          <li>One squeeze per turn. Grippy, soft balloons stack best.</li>
+        </ul>
+        <div class="mode" role="radiogroup" aria-label="Game mode">
+          <label class="toggle"><input type="radio" name="mode" id="mSolo" value="solo" checked> Solo: stack all 11 yourself</label>
+          <label class="toggle"><input type="radio" name="mode" id="mVs" value="vs"> Versus the AI: take turns. Spill one and you lose; place the last balloon and you win.</label>
+        </div>
+        <div class="btns"><button id="bNew">New game</button></div>
+      </div>
+
+      <label class="switch" for="cInspect">
+        <input type="checkbox" id="cInspect" role="switch">
+        <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+        <span><b>AI inspector</b><br><span class="muted">Show the forecaster's odds, beliefs and decision trace</span></span>
+      </label>
+
+      <section class="inspector" id="inspector" hidden>
+        <div class="card">
+          <div class="label" id="iTitle">Forecast</div>
+          <div class="odds"><span class="big" id="pBig">—</span><span class="ci" id="pCi">Pick up a balloon to see its odds for each spot.</span></div>
+          <div class="belief"><span>Grip</span><div class="meter" id="mGrip"><i></i><em></em></div><span class="v" id="vGrip">—</span></div>
+          <div class="belief"><span>Bounce</span><div class="meter" id="mBounce"><i></i><em></em></div><span class="v" id="vBounce">—</span></div>
+          <p class="hint">Each spot's odds come from physics simulations with the hidden values drawn from the model's beliefs. The shaded band is its uncertainty and the line its best guess. A squeeze is a noisy reading that narrows the band.</p>
+        </div>
+
+        <div class="card">
+          <div class="cal"><span class="label">Calibration</span><span class="brier" id="brier">Brier —</span></div>
+          <table class="calt" id="calt"><thead><tr><th>Forecast</th><th>Moves</th><th>Predicted</th><th>Held</th></tr></thead><tbody></tbody></table>
+          <p class="hint">A well-calibrated model's predicted and held columns match. Brier score: lower is better, 0.25 is a coin flip.</p>
+        </div>
+
+        <div class="card">
+          <div class="cal"><span class="label">Decision trace</span><span class="brier" id="tCount">0 spans</span></div>
+          <ol class="trace" id="trace"></ol>
+          <div class="btns">
+            <button id="bCopy">Copy trace JSON</button>
+          </div>
+          <textarea id="traceOut" class="traceout" readonly hidden aria-label="Trace JSON"></textarea>
+          <p class="hint">Span records with trace and parent ids, shaped like OpenTelemetry so they can be sent to a collector.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+// ---- Simulation core (shared by live play and Monte Carlo rollouts) ----
+// Stacking corner: floor, door-frame wall on the right, a low lip on the left, olive-branch pegs above it.
+const ARENA = { W: 360, H: 600, floorY: 588, x0: 204, wallX: 330 };
+const PEGS = [ { x: 200, y: 520, r: 7 }, { x: 196, y: 440, r: 7 }, { x: 202, y: 356, r: 7 }, { x: 198, y: 272, r: 7 } ];
+const SLOTS = 7;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+function gauss(rng) { let u = 0; while (u === 0) u = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rng()); }
+
+function bodyFor(M, b, x, y, grip, bounce) {
+  return M.Bodies.circle(x, y, b.r, {
+    restitution: 0.05 + bounce * 0.5, friction: 0.05 + grip * 0.9, frictionStatic: 0.4 + grip * 4,
+    frictionAir: 0.04, density: 0.0012
+  });
+}
+
+function makeEngine(M) {
+  const engine = M.Engine.create({ enableSleeping: false });
+  engine.gravity.y = 1; engine.positionIterations = 8; engine.velocityIterations = 6;
+  const B = M.Bodies, so = { isStatic: true, friction: 0.5, frictionStatic: 1, restitution: 0.1 };
+  const st = [
+    B.rectangle(180, ARENA.floorY + 20, 420, 40, so),
+    B.rectangle(ARENA.wallX + 8, 300, 16, 700, so),
+    B.rectangle(ARENA.x0 - 4, ARENA.floorY - 14, 8, 28, so),
+    B.rectangle(-10, 300, 20, 700, so)
+  ];
+  PEGS.forEach(p => st.push(B.circle(p.x, p.y, p.r, so)));
+  M.Composite.add(engine.world, st);
+  return engine;
+}
+
+function slotX(i, r) { const lo = ARENA.x0 + 2 + r, hi = ARENA.wallX - r; return lo + (hi - lo) * i / (SLOTS - 1); }
+
+// Gentle placement: just above whatever is already in that column.
+function dropY(stack, x, r) {
+  let y = ARENA.floorY - r - 1;
+  for (const b of stack) {
+    const dx = Math.abs(b.x - x);
+    if (dx < b.r + r) { const yy = b.y - Math.sqrt((b.r + r) ** 2 - dx * dx) - 3; if (yy < y) y = yy; }
+  }
+  return y;
+}
+
+const spilled = b => b.x < ARENA.x0;
+
+function snapshot(list, bodies) { list.forEach(b => { const s = bodies.get(b.id); if (s) { b.x = s.position.x; b.y = s.position.y; b.a = s.angle; } }); }
+
+function sampleBel(b, rng) {
+  return { g: clamp(b.bel.gm + gauss(rng) * Math.sqrt(b.bel.gv), 0, 1), k: clamp(b.bel.km + gauss(rng) * Math.sqrt(b.bel.kv), 0, 1) };
+}
+
+// One rollout: does the stack keep every balloon after placing `cand` in slot `slot`?
+// A freshly rebuilt stack has none of the friction its real counterpart has built up, so it would sag
+// and spill on its own. We first ease gravity in with extra damping so the copy settles, then add the new balloon.
+const SETTLE = 90;
+function rollout(M, stack, cand, slot, rng, steps) {
+  const engine = makeEngine(M), bodies = new Map();
+  for (const b of stack) {
+    const s = sampleBel(b, rng);
+    const body = bodyFor(M, b, b.x, b.y, s.g, s.k);
+    body.angle = b.a || 0; bodies.set(b.id, body);
+  }
+  const list = [...bodies.values()];
+  M.Composite.add(engine.world, list);
+  if (list.length) for (let i = 0; i < SETTLE; i++) {
+    engine.gravity.y = (i + 1) / SETTLE;
+    const air = 0.04 + 0.5 * (1 - i / SETTLE);
+    for (const b of list) b.frictionAir = air;
+    M.Engine.update(engine, 1000 / 60);
+  }
+  engine.gravity.y = 1;
+  for (const b of list) b.frictionAir = 0.04;
+  const s = sampleBel(cand, rng);
+  const x = slotX(slot, cand.r) + gauss(rng) * 2;
+  const placed = stack.map(b => { const body = bodies.get(b.id); return { x: body.position.x, y: body.position.y, r: b.r }; });
+  const nb = bodyFor(M, cand, x, dropY(placed, x, cand.r), s.g, s.k);
+  bodies.set(cand.id, nb); M.Composite.add(engine.world, nb);
+  for (let i = 0; i < steps; i++) {
+    M.Engine.update(engine, 1000 / 60);
+    if (i % 10 === 9) {
+      let moving = 0;
+      for (const body of bodies.values()) { if (body.position.x < ARENA.x0) return false; moving += body.speed; }
+      if (i > 50 && moving < 0.05 * bodies.size) return true;
+    }
+  }
+  for (const body of bodies.values()) if (body.position.x < ARENA.x0) return false;
+  return true;
+}
+
+function makeBalloons(rng, n) {
+  const COLORS = ['orange', 'green', 'red', 'yellow', 'blue'];
+  const out = [];
+  for (let i = 0; i < n; i++) out.push({
+    id: i + 1, r: 21 + rng() * 6, color: COLORS[i % COLORS.length],
+    grip: 0.08 + rng() * 0.88, bounce: rng(),
+    bel: { gm: 0.5, gv: 0.0625, km: 0.5, kv: 0.0625 }, squeezed: 0
+  });
+  for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
+  out.forEach((b, i) => b.id = i + 1);
+  return out;
+}
+
+// ---- Game layer ----
+(function () {
+const M = Matter;
+const rng = Math.random;
+const N = 11, QUICK = 12, FULL = 40, MIN_AT_DROP = 8;
+const HUE = { orange: '#F28A2E', green: '#1F7A45', red: '#E2463E', yellow: '#F2C42A', blue: '#2F4FD1' };
+const $ = id => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let G, token = 0, theme = {}, starter = 'ai', inspect = false;
+
+function readTheme() {
+  const cs = getComputedStyle(document.documentElement);
+  ['wall', 'wall-shade', 'frame', 'frame-edge', 'floor', 'ink', 'muted', 'good', 'warn', 'bad', 'surface', 'accent'].forEach(k => theme[k] = cs.getPropertyValue('--' + k).trim());
+}
+readTheme();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readTheme);
+new MutationObserver(readTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+(function fit() { const d = Math.min(window.devicePixelRatio || 1, 2); cv.width = 360 * d; cv.height = 600 * d; ctx.setTransform(d, 0, 0, d, 0, 0); })();
+
+// ---------- Tracing (OpenTelemetry-shaped spans) ----------
+const hex = n => Array.from({ length: n }, () => Math.floor(rng() * 16).toString(16)).join('');
+const nowNs = () => String(Math.round((performance.timeOrigin + performance.now()) * 1e6));
+const Tr = {
+  spans: [],
+  start(name, parent, attrs) {
+    const s = { traceId: G.traceId, spanId: hex(16), parentSpanId: parent ? parent.spanId : null, name,
+                startTimeUnixNano: nowNs(), endTimeUnixNano: null, attributes: Object.assign({}, attrs), events: [], status: { code: 'UNSET' } };
+    this.spans.push(s); return s;
+  },
+  end(s, attrs, ok) {
+    if (!s || s.endTimeUnixNano) return;
+    Object.assign(s.attributes, attrs || {});
+    s.endTimeUnixNano = nowNs();
+    s.status = { code: ok === false ? 'ERROR' : 'OK' };
+  },
+  event(s, name, attrs) { if (s) s.events.push({ name, timeUnixNano: nowNs(), attributes: attrs || {} }); },
+  export() {
+    return { resourceSpans: [{ resource: { attributes: { 'service.name': 'balloon-stack', 'service.version': '1.0' } },
+      scopeSpans: [{ scope: { name: 'balloon-stack.forecaster' }, spans: this.spans }] }] };
+  }
+};
+const r3 = v => Math.round(v * 1000) / 1000;
+const beliefsOf = list => list.map(b => ({ id: b.id, grip_mean: r3(b.bel.gm), grip_var: r3(b.bel.gv), bounce_mean: r3(b.bel.km), bounce_var: r3(b.bel.kv) }));
+
+// Floor pile layout on the left side of the room.
+const PILE = [[36, 0], [88, 0], [140, 0], [62, 1], [114, 1], [166, 1], [36, 2], [88, 2], [140, 2], [62, 3], [114, 3]];
+function layoutGround() { G.ground.forEach((b, i) => { const [x, row] = PILE[i]; b.x = x; b.y = ARENA.floorY - 26 - row * 44; b.a = 0; }); }
+
+function newGame() {
+  token++;
+  if (G && G.gameSpan) Tr.end(G.gameSpan, { 'game.result': 'abandoned' });
+  const vs = $('mVs').checked;
+  if (vs) starter = starter === 'you' ? 'ai' : 'you';
+  G = { mode: vs ? 'vs' : 'solo', ground: makeBalloons(rng, N), stack: [], turn: vs ? starter : 'you',
+        sel: null, slot: null, fc: new Map(), squeezed: false, busy: false, over: null,
+        calib: [], placed: { you: 0, ai: 0 }, engine: makeEngine(M), bodies: new Map(),
+        settle: 0, pending: null, wobble: null, reveal: false, parts: [], traceId: hex(32), move: 0, turnSpan: null };
+  Tr.spans = [];
+  G.gameSpan = Tr.start('game', null, { 'game.mode': G.mode, 'game.balloons': N, 'game.first_turn': G.turn });
+  layoutGround();
+  $('banner').hidden = true; status('');
+  renderPanel(); renderInspector();
+  if (G.turn === 'ai') setTimeout(aiTurn, 600);
+}
+
+function turnSpan(actor) {
+  if (!G.turnSpan) {
+    G.move++;
+    G.turnSpan = Tr.start('move', G.gameSpan, { 'move.number': G.move, 'move.actor': actor, 'stack.size': G.stack.length });
+    Tr.event(G.turnSpan, 'beliefs.snapshot', { balloons: beliefsOf(G.ground) });
+  }
+  return G.turnSpan;
+}
+
+// ---------- Forecasting ----------
+const key = (id, s) => id + ':' + s;
+function runRollouts(c, s, n) {
+  const k = key(c.id, s), prev = G.fc.get(k);
+  let wins = prev ? Math.round(prev.p * prev.n) : 0, done = prev ? prev.n : 0;
+  for (; done < n; done++) if (rollout(M, G.stack, c, s, rng, 150)) wins++;
+  G.fc.set(k, { p: wins / done, n: done, partial: false });
+}
+async function forecast(pairs, n) {
+  const my = token;
+  for (const [id, s] of pairs) {
+    const c = G.ground.find(b => b.id === id); if (!c) continue;
+    const prev = G.fc.get(key(id, s));
+    if (prev && prev.n >= n) continue;
+    let wins = prev ? Math.round(prev.p * prev.n) : 0, done = prev ? prev.n : 0;
+    while (done < n) {
+      for (let k = 0; k < 3 && done < n; k++, done++) if (rollout(M, G.stack, c, s, rng, 150)) wins++;
+      await new Promise(r => setTimeout(r, 0));
+      if (my !== token) return false;
+      G.fc.set(key(id, s), { p: wins / done, n: done, partial: done < n });
+      if (inspect && G.sel === id) renderInspector();
+    }
+  }
+  if (inspect) renderInspector();
+  return true;
+}
+const allSlots = id => Array.from({ length: SLOTS }, (_, s) => [id, s]);
+
+// ---------- Beliefs ----------
+function squeeze(b, actor) {
+  const span = Tr.start('squeeze', turnSpan(actor), { 'balloon.id': b.id, 'prior.grip_mean': r3(b.bel.gm), 'prior.grip_var': r3(b.bel.gv), 'prior.bounce_mean': r3(b.bel.km), 'prior.bounce_var': r3(b.bel.kv) });
+  const zg = clamp(b.grip + gauss(rng) * 0.15, 0, 1), zk = clamp(b.bounce + gauss(rng) * 0.15, 0, 1);
+  const kg = b.bel.gv / (b.bel.gv + 0.0225), kk = b.bel.kv / (b.bel.kv + 0.0225);
+  b.bel.gm += kg * (zg - b.bel.gm); b.bel.gv *= (1 - kg);
+  b.bel.km += kk * (zk - b.bel.km); b.bel.kv *= (1 - kk);
+  b.squeezed++;
+  G.wobble = { id: b.id, t: performance.now() };
+  Tr.end(span, { 'reading.grip': r3(zg), 'reading.bounce': r3(zk), 'reading.noise_sd': 0.15, 'kalman_gain.grip': r3(kg), 'kalman_gain.bounce': r3(kk),
+                 'posterior.grip_mean': r3(b.bel.gm), 'posterior.grip_var': r3(b.bel.gv), 'posterior.bounce_mean': r3(b.bel.km), 'posterior.bounce_var': r3(b.bel.kv) });
+  return { zg, zk };
+}
+function feelWords(z) {
+  const g = z.zg > 0.66 ? 'tacky and clingy' : z.zg > 0.38 ? 'a little grippy' : 'smooth and slippery';
+  const k = z.zk > 0.66 ? 'tight and bouncy' : z.zk > 0.38 ? 'fairly firm' : 'soft and squishy';
+  return `It feels ${g}, ${k}.`;
+}
+
+// ---------- Placing ----------
+function place(id, slot, who) {
+  const c = G.ground.find(b => b.id === id);
+  const ts = turnSpan(who);
+  // Make sure the forecast behind this move has enough samples to be worth grading.
+  const before = G.fc.get(key(id, slot));
+  if (!before || before.n < MIN_AT_DROP) runRollouts(c, slot, MIN_AT_DROP);
+  const f = G.fc.get(key(id, slot));
+  const cands = [];
+  G.fc.forEach((v, k) => { const [bid, s] = k.split(':').map(Number); if (G.ground.some(b => b.id === bid)) cands.push({ balloon: bid, spot: s + 1, rollouts: v.n, p_hold: r3(v.p) }); });
+  cands.sort((a, b) => b.p_hold - a.p_hold);
+  const fs = Tr.start('forecast', ts, { 'candidates.count': cands.length, 'rollouts.total': cands.reduce((s, c) => s + c.rollouts, 0) });
+  Tr.end(fs, { candidates: cands });
+  G.busy = true; token++;
+  G.ground = G.ground.filter(b => b !== c); layoutGround();
+  c.x = slotX(slot, c.r); c.y = dropY(G.stack, c.x, c.r); c.a = 0;
+  const body = bodyFor(M, c, c.x, c.y, c.grip, c.bounce);
+  G.bodies.set(c.id, body); M.Composite.add(G.engine.world, body);
+  G.stack.push(c); G.placed[who]++;
+  const ps = Tr.start('physics.settle', ts, { 'balloon.id': id, 'spot': slot + 1, 'steps': 210 });
+  G.pending = { who, id, slot, p: f.p, n: f.n, color: c.color, span: ps };
+  G.sel = null; G.slot = null; G.settle = 210;
+  renderPanel();
+}
+function finishPlace() {
+  const { who, id, slot, p, n, span } = G.pending;
+  G.pending = null; G.busy = false;
+  const out = G.stack.filter(spilled);
+  const ok = out.length === 0;
+  G.calib.push({ p, o: ok ? 1 : 0 });
+  Tr.end(span, { 'outcome.held': ok, 'outcome.spilled_ids': out.map(b => b.id) }, ok);
+  Tr.end(G.turnSpan, { 'balloon.id': id, 'spot': slot + 1, 'prediction.p_hold': r3(p), 'prediction.rollouts': n,
+                       'outcome.held': ok, 'brier.contribution': r3((p - (ok ? 1 : 0)) ** 2) }, ok);
+  G.turnSpan = null;
+  if (!ok) { out.forEach(puff); return endGame(G.mode === 'solo' ? 'lost' : (who === 'you' ? 'ai' : 'you'), 'spill'); }
+  if (G.ground.length === 0) return endGame(G.mode === 'solo' ? 'won' : who, 'done');
+  G.squeezed = false; G.fc.clear();
+  if (G.mode === 'vs') G.turn = who === 'you' ? 'ai' : 'you';
+  status(who === 'ai' ? 'The forecaster placed a balloon. Your turn.' : G.stack.length > 6 ? 'It held. Getting taller.' : 'It held.');
+  renderPanel(); renderInspector();
+  if (G.turn === 'ai') setTimeout(aiTurn, 500);
+}
+function endGame(result, why) {
+  G.over = result; G.reveal = true;
+  Tr.end(G.gameSpan, { 'game.result': result, 'game.end_reason': why, 'stack.final_size': G.stack.length - (why === 'spill' ? 1 : 0),
+                       'brier.score': G.calib.length ? r3(G.calib.reduce((s, c) => s + (c.p - c.o) ** 2, 0) / G.calib.length) : null,
+                       'true_values': G.stack.concat(G.ground).map(b => ({ id: b.id, grip: r3(b.grip), bounce: r3(b.bounce) })) });
+  const head = { won: 'All 11 stacked', lost: 'The stack fell', you: 'You win', ai: 'The AI wins' }[result];
+  const msg = why === 'spill' ? (G.mode === 'solo' ? `A balloon rolled out with ${G.stack.length - 1} up.` : 'A balloon rolled out of the corner.')
+                              : (G.mode === 'solo' ? 'Every balloon is off the floor.' : 'The last balloon held.');
+  const b = $('banner');
+  b.innerHTML = `<b>${head}</b>${msg}`;
+  b.hidden = false; status(''); renderPanel(); renderInspector();
+}
+
+// ---------- AI ----------
+async function aiTurn() {
+  if (G.over || G.turn !== 'ai') return;
+  G.busy = true; renderPanel();
+  status('The forecaster is thinking…');
+  turnSpan('ai');
+  const byGrip = [...G.ground].sort((a, b) => b.bel.gm - a.bel.gm);
+  const unsure = [...G.ground].sort((a, b) => b.bel.gv - a.bel.gv)[0];
+  if (unsure.bel.gv > 0.02) { squeeze(unsure, 'ai'); G.squeezed = true; byGrip.sort((a, b) => b.bel.gm - a.bel.gm); }
+  const short = byGrip.slice(0, 3).map(b => b.id);
+  for (const id of short) { G.sel = id; if (inspect) renderInspector(); if (!(await forecast(allSlots(id), 8))) return; }
+  let ranked = [];
+  short.forEach(id => { for (let s = 0; s < SLOTS; s++) ranked.push({ id, s, p: G.fc.get(key(id, s)).p }); });
+  ranked.sort((a, b) => b.p - a.p);
+  const top = ranked.slice(0, 3);
+  if (!(await forecast(top.map(r => [r.id, r.s]), 32))) return;
+  top.forEach(r => r.p = G.fc.get(key(r.id, r.s)).p);
+  top.sort((a, b) => b.p - a.p);
+  const pick = top[0];
+  Tr.event(G.turnSpan, 'ai.decision', { policy: 'max p_hold over top-3 balloons by believed grip', shortlist: short, chosen_balloon: pick.id, chosen_spot: pick.s + 1, p_hold: r3(pick.p) });
+  G.sel = pick.id; G.slot = pick.s; renderInspector();
+  await new Promise(r => setTimeout(r, reduce ? 200 : 900));
+  if (G.over) return;
+  place(pick.id, pick.s, 'ai');
+}
+
+// ---------- Rendering ----------
+function puff(b) { for (let i = 0; i < 10; i++) { const a = rng() * 6.28; G.parts.push({ x: b.x, y: b.y, vx: Math.cos(a), vy: Math.sin(a), life: 30, c: HUE[b.color] }); } }
+const oddsColor = p => p >= 0.8 ? theme.good : p >= 0.5 ? theme.warn : theme.bad;
+
+function drawScene() {
+  ctx.fillStyle = theme.wall; ctx.fillRect(0, 0, 360, 600);
+  ctx.fillStyle = theme['wall-shade']; ctx.fillRect(0, 0, 150, 600);
+  ctx.fillStyle = theme.frame; ctx.fillRect(ARENA.wallX, 0, 30, 600);
+  ctx.strokeStyle = theme['frame-edge']; ctx.lineWidth = 1;
+  ctx.strokeRect(ARENA.wallX + 0.5, -1, 12, 620); ctx.strokeRect(ARENA.wallX + 12.5, -1, 18, 620);
+  ctx.fillStyle = theme.floor; ctx.fillRect(0, ARENA.floorY, 360, 12);
+  ctx.fillStyle = '#B42A22'; ctx.fillRect(ARENA.x0 - 8, ARENA.floorY - 28, 8, 28);
+  ctx.strokeStyle = '#5E6B4E'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+  PEGS.forEach((p, i) => {
+    ctx.beginPath(); ctx.moveTo(p.x - 60, p.y + 26 - i * 3); ctx.quadraticCurveTo(p.x - 26, p.y + 7, p.x, p.y); ctx.stroke();
+    ctx.fillStyle = '#6F8460';
+    for (let k = 0; k < 4; k++) { const t = 0.2 + k * 0.2, lx = p.x - 60 * (1 - t) - 4, ly = p.y + (26 - i * 3) * (1 - t);
+      ctx.beginPath(); ctx.ellipse(lx, ly + (k % 2 ? 6 : -6), 8, 3, k % 2 ? 0.5 : -0.5, 0, 6.283); ctx.fill(); }
+    ctx.fillStyle = '#3E4733'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+  });
+}
+function balloonShape(b, x, y, a, alpha) {
+  ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.rotate(a);
+  const r = b.r, c = HUE[b.color];
+  const g = ctx.createRadialGradient(-r * 0.35, -r * 0.4, r * 0.1, 0, 0, r * 1.1);
+  g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(0.25, c); g.addColorStop(1, c);
+  ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, r, r * 1.04, 0, 0, 6.283); ctx.fill();
+  ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(-4, r + 4); ctx.lineTo(4, r + 4); ctx.lineTo(0, r - 3); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+function label(b, x, y, txt) {
+  ctx.font = '600 11px "Chivo Mono", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = b.color === 'yellow' || b.color === 'orange' ? 'rgba(0,0,0,.7)' : 'rgba(255,255,255,.92)';
+  ctx.fillText(txt, x, y);
+}
+const tagOf = b => !inspect ? null : G.reveal ? Math.round(b.grip * 100) + '%' : '#' + b.id;
+
+function frame(now) {
+  if (G.settle > 0) {
+    const n = reduce ? 5 : 1;
+    for (let i = 0; i < n && G.settle > 0; i++, G.settle--) M.Engine.update(G.engine, 1000 / 60);
+    snapshot(G.stack, G.bodies);
+    if (G.settle <= 0) finishPlace();
+  }
+  drawScene();
+  const sel = G.ground.find(b => b.id === G.sel);
+  const dragging = drag && drag.moved;
+  if (sel && !G.over) {
+    for (let s = 0; s < SLOTS; s++) {
+      const chosen = G.slot === s;
+      if (!inspect && !chosen) continue;
+      const x = slotX(s, sel.r), y = dropY(G.stack, x, sel.r), f = G.fc.get(key(sel.id, s));
+      if (inspect) {
+        balloonShape(sel, x, y, 0, chosen ? 0.5 : 0.14);
+        ctx.lineWidth = chosen ? 3 : 2; ctx.strokeStyle = f ? oddsColor(f.p) : theme.muted;
+        ctx.setLineDash(chosen ? [] : [4, 4]); ctx.beginPath(); ctx.arc(x, y, sel.r, 0, 6.283); ctx.stroke(); ctx.setLineDash([]);
+        ctx.font = '600 11px "Chivo Mono", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = theme.ink; ctx.fillText(f ? Math.round(f.p * 100) + '%' : '…', x, y);
+      } else if (!dragging) {
+        balloonShape(sel, x, y, 0, 0.35);
+        ctx.lineWidth = 2; ctx.strokeStyle = theme.ink; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.arc(x, y, sel.r, 0, 6.283); ctx.stroke(); ctx.setLineDash([]);
+      }
+    }
+  }
+  G.stack.forEach(b => { balloonShape(b, b.x, b.y, b.a || 0, 1); const t = tagOf(b); if (t) label(b, b.x, b.y, t); });
+  G.ground.forEach(b => {
+    if (dragging && drag.id === b.id) return;
+    let wob = 0;
+    if (G.wobble && G.wobble.id === b.id) { const dt = now - G.wobble.t; if (dt < 700) wob = Math.sin(dt / 40) * 3 * (1 - dt / 700); else G.wobble = null; }
+    balloonShape(b, b.x + wob, b.y, 0, 1);
+    const t = tagOf(b); if (t) label(b, b.x + wob, b.y, t);
+    if (G.sel === b.id) { ctx.strokeStyle = theme.ink; ctx.lineWidth = 2.5; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(b.x, b.y, b.r + 4, 0, 6.283); ctx.stroke(); ctx.setLineDash([]); }
+  });
+  if (dragging) {
+    const b = G.ground.find(x => x.id === drag.id);
+    if (b) { const x = drag.x + drag.ox, y = drag.y + drag.oy;
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.28)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 8; balloonShape(b, x, y, Math.sin(now / 160) * 0.06, 0.95); ctx.restore();
+      const t = tagOf(b); if (t) label(b, x, y, t); }
+  }
+  G.parts = G.parts.filter(p => p.life-- > 0);
+  G.parts.forEach(p => { p.x += p.vx; p.y += p.vy; ctx.globalAlpha = p.life / 30; ctx.fillStyle = p.c; ctx.fillRect(p.x - 2, p.y - 2, 4, 4); });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(frame);
+}
+
+// ---------- Player panel ----------
+function status(t) { $('status').textContent = t; }
+function renderPanel() {
+  const yours = G.turn === 'you' && !G.over;
+  const vs = G.mode === 'vs';
+  $('pYou').classList.toggle('on', yours && !G.busy); $('pAi').classList.toggle('on', vs && G.turn === 'ai' && !G.over);
+  $('aiWho').textContent = vs ? 'Forecaster AI' : 'Floor';
+  $('sYou').textContent = vs ? `${G.placed.you} placed` : `${G.stack.length} of ${N} up`;
+  $('sAi').textContent = vs ? `${G.placed.ai} placed` : `${G.ground.length} left`;
+  $('tYou').textContent = G.over ? ({ you: 'Winner', won: 'Cleared', lost: 'Fell' }[G.over] || '') : yours ? 'Your turn' : 'Waiting';
+  $('tAi').textContent = vs ? (G.over ? (G.over === 'ai' ? 'Winner' : '') : G.turn === 'ai' ? 'Thinking' : 'Waiting') : 'Balloons to lift';
+  const b = G.ground.find(x => x.id === G.sel);
+  $('selTitle').textContent = G.over ? 'Game over' : (yours && b) ? (G.slot === null ? 'Drag it into the corner' : 'Drop it here?') : yours ? 'Drag a balloon into the corner' : 'The forecaster is taking its turn';
+  const can = yours && !G.busy && b;
+  $('bSqueeze').disabled = !(can && !G.squeezed);
+  $('bPlace').hidden = !(can && G.slot !== null && !(drag && drag.moved));
+  $('bPlace').disabled = !(can && G.slot !== null);
+}
+
+// ---------- Inspector ----------
+function setMeter(el, m, v) {
+  const sd = Math.sqrt(v), i = el.querySelector('i'), e = el.querySelector('em');
+  const lo = clamp(m - 2 * sd, 0, 1), hi = clamp(m + 2 * sd, 0, 1);
+  i.style.left = lo * 100 + '%'; i.style.width = (hi - lo) * 100 + '%'; e.style.left = clamp(m, 0, 1) * 100 + '%';
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function renderInspector() {
+  if (!inspect) return;
+  const b = G.ground.find(x => x.id === G.sel);
+  if (b) {
+    $('iTitle').textContent = `Balloon #${b.id}${G.slot !== null ? ' → spot ' + (G.slot + 1) : ''}${b.squeezed ? ' · squeezed' : ''}`;
+    const fs = Array.from({ length: SLOTS }, (_, s) => G.fc.get(key(b.id, s)));
+    const f = G.slot !== null ? fs[G.slot] : null;
+    if (f) {
+      $('pBig').textContent = Math.round(f.p * 100) + '%'; $('pBig').style.color = oddsColor(f.p);
+      const ci = 1.96 * Math.sqrt(Math.max(f.p * (1 - f.p), 0.01) / f.n);
+      $('pCi').textContent = `chance it all holds · ±${Math.round(ci * 100)} pts · ${f.n} simulations${f.partial ? '…' : ''}`;
+    } else if (fs.every(Boolean)) {
+      const best = fs.reduce((m, x, s) => x.p > m.p ? { p: x.p, s } : m, { p: -1, s: 0 });
+      $('pBig').textContent = Math.round(best.p * 100) + '%'; $('pBig').style.color = oddsColor(best.p);
+      $('pCi').textContent = `best spot is ${best.s + 1}. Each ring on the board shows a spot's odds.`;
+    } else { $('pBig').textContent = '…'; $('pBig').style.color = ''; $('pCi').textContent = 'Simulating each spot'; }
+    setMeter($('mGrip'), b.bel.gm, b.bel.gv); $('vGrip').textContent = `${Math.round(b.bel.gm * 100)} ±${Math.round(Math.sqrt(b.bel.gv) * 100)}`;
+    setMeter($('mBounce'), b.bel.km, b.bel.kv); $('vBounce').textContent = `${Math.round(b.bel.km * 100)} ±${Math.round(Math.sqrt(b.bel.kv) * 100)}`;
+  } else {
+    $('iTitle').textContent = 'Forecast';
+    $('pBig').textContent = '—'; $('pBig').style.color = '';
+    $('pCi').textContent = G.over ? 'Balloons now show their true grip.' : 'Pick up a balloon to see its odds for each spot.';
+    ['mGrip', 'mBounce'].forEach(m => { const el = $(m); el.querySelector('i').style.width = '0'; el.querySelector('em').style.left = '-4px'; });
+    $('vGrip').textContent = '—'; $('vBounce').textContent = '—';
+  }
+  // calibration
+  if (G.calib.length) {
+    const bs = G.calib.reduce((s, c) => s + (c.p - c.o) ** 2, 0) / G.calib.length;
+    $('brier').textContent = `Brier ${bs.toFixed(3)} · ${G.calib.length} move${G.calib.length > 1 ? 's' : ''}`;
+  } else $('brier').textContent = 'Brier —';
+  const rows = [];
+  for (let k = 0; k < 5; k++) {
+    const inB = G.calib.filter(c => Math.min(4, Math.floor(c.p * 5)) === k);
+    if (!inB.length) { rows.push(`<tr><td>${k * 20}–${k * 20 + 20}%</td><td>0</td><td>—</td><td>—</td></tr>`); continue; }
+    const pp = inB.reduce((s, c) => s + c.p, 0) / inB.length, oo = inB.reduce((s, c) => s + c.o, 0) / inB.length;
+    rows.push(`<tr><td>${k * 20}–${k * 20 + 20}%</td><td>${inB.length}</td><td>${Math.round(pp * 100)}%</td><td class="${Math.abs(pp - oo) > 0.25 && inB.length >= 3 ? 'off' : ''}">${Math.round(oo * 100)}%</td></tr>`);
+  }
+  $('calt').tBodies[0].innerHTML = rows.join('');
+  // trace
+  $('tCount').textContent = `${Tr.spans.length} span${Tr.spans.length === 1 ? '' : 's'}`;
+  const moves = Tr.spans.filter(s => s.name === 'move').slice().reverse();
+  $('trace').innerHTML = moves.length ? moves.map(m => {
+    const a = m.attributes, kids = Tr.spans.filter(s => s.parentSpanId === m.spanId);
+    const head = a['balloon.id'] !== undefined
+      ? `Move ${a['move.number']} · ${a['move.actor'] === 'you' ? 'You' : 'AI'} · #${a['balloon.id']} → spot ${a.spot} · forecast ${Math.round(a['prediction.p_hold'] * 100)}% · <span class="${a['outcome.held'] ? '' : 'bad'}">${a['outcome.held'] ? 'held' : 'spilled'}</span>`
+      : `Move ${a['move.number']} · ${a['move.actor'] === 'you' ? 'You' : 'AI'} · in progress`;
+    const lines = kids.map(k => {
+      const ka = k.attributes;
+      if (k.name === 'squeeze') return `<div><b>squeeze</b> #${ka['balloon.id']} read grip ${ka['reading.grip']}, bounce ${ka['reading.bounce']} → grip belief ${ka['prior.grip_mean']}→${ka['posterior.grip_mean']} (var ${ka['prior.grip_var']}→${ka['posterior.grip_var']})</div>`;
+      if (k.name === 'forecast') return `<div><b>forecast</b> ${ka['candidates.count']} candidates, ${ka['rollouts.total']} rollouts. Top: ${(ka.candidates || []).slice(0, 3).map(c => `#${c.balloon}@${c.spot} ${Math.round(c.p_hold * 100)}% (n${c.rollouts})`).join(', ')}</div>`;
+      if (k.name === 'physics.settle') return `<div><b>physics.settle</b> ${ka.steps} steps · ${ka['outcome.held'] === undefined ? 'running' : ka['outcome.held'] ? 'held' : 'spilled #' + ka['outcome.spilled_ids'].join(', #')}</div>`;
+      return `<div><b>${esc(k.name)}</b></div>`;
+    });
+    m.events.filter(e => e.name === 'ai.decision').forEach(e => lines.push(`<div><b>ai.decision</b> ${esc(e.attributes.policy)} → #${e.attributes.chosen_balloon}@${e.attributes.chosen_spot}</div>`));
+    const brier = a['brier.contribution'] !== undefined ? `<span class="k">brier ${a['brier.contribution']}</span>` : '';
+    return `<li><details><summary><span>${head}</span>${brier}</summary><div class="kids">${lines.join('')}<div class="k">span ${m.spanId} · parent ${m.parentSpanId}</div></div></details></li>`;
+  }).join('') : '<li class="muted">Each move becomes a span with child spans for squeezes, the forecast and the physics outcome.</li>';
+}
+
+// ---------- Input ----------
+let drag = null;
+const canPlay = () => G && !G.busy && !G.over && G.turn === 'you';
+function toCanvas(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * 360 / r.width, y: (e.clientY - r.top) * 600 / r.height }; }
+const hitGround = p => G.ground.find(b => Math.hypot(b.x - p.x, b.y - p.y) < b.r + 6);
+function nearestSlot(b, x, y) {
+  if (x < ARENA.x0 - 14) return null;
+  let best = 0, bd = 1e9;
+  for (let s = 0; s < SLOTS; s++) { const sx = slotX(s, b.r), sy = dropY(G.stack, sx, b.r), d = Math.hypot(sx - x, (sy - y) * 0.4); if (d < bd) { bd = d; best = s; } }
+  return best;
+}
+function select(g) {
+  if (G.sel === g.id) return;
+  G.sel = g.id; G.slot = null; token++; status('');
+  turnSpan('you');
+  renderPanel(); renderInspector();
+  forecast(allSlots(g.id), QUICK);
+}
+function chooseSlot(sel, s) {
+  G.slot = s; token++; renderPanel(); renderInspector();
+  forecast([[sel.id, s]], FULL).then(ok => { if (ok) forecast(allSlots(sel.id), QUICK); });
+}
+cv.addEventListener('touchstart', e => { if (!canPlay()) return; const t = e.touches[0]; if (t && hitGround(toCanvas(t))) e.preventDefault(); }, { passive: false });
+cv.addEventListener('pointerdown', e => {
+  if (!canPlay()) return;
+  const p = toCanvas(e), g = hitGround(p);
+  if (g) {
+    select(g);
+    drag = { id: g.id, x: p.x, y: p.y, ox: g.x - p.x, oy: g.y - p.y - (e.pointerType === 'touch' ? 34 : 0), sx: p.x, sy: p.y, moved: false };
+    try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    cv.style.cursor = 'grabbing';
+    return;
+  }
+  const sel = G.ground.find(b => b.id === G.sel);
+  if (sel) { const s = nearestSlot(sel, p.x, p.y); if (s !== null) chooseSlot(sel, s); }
+});
+cv.addEventListener('pointermove', e => {
+  const p = toCanvas(e);
+  if (!drag) { cv.style.cursor = canPlay() && hitGround(p) ? 'grab' : 'default'; return; }
+  drag.x = p.x; drag.y = p.y;
+  if (Math.hypot(p.x - drag.sx, p.y - drag.sy) > 6) { if (!drag.moved) { drag.moved = true; renderPanel(); } }
+  if (!drag.moved) return;
+  const b = G.ground.find(x => x.id === drag.id);
+  const s = nearestSlot(b, p.x + drag.ox, p.y + drag.oy);
+  if (s !== G.slot) { G.slot = s; renderInspector(); if (s !== null) { token++; forecast([[b.id, s]], QUICK); } }
+});
+function endDrag(cancel) {
+  if (!drag) return;
+  const d = drag; drag = null; cv.style.cursor = '';
+  if (!d.moved) { renderPanel(); return; }
+  const b = G.ground.find(x => x.id === d.id);
+  if (!cancel && b && G.slot !== null && canPlay()) { place(b.id, G.slot, 'you'); return; }
+  G.slot = null; renderPanel(); renderInspector();
+}
+cv.addEventListener('pointerup', () => endDrag(false));
+cv.addEventListener('pointercancel', () => endDrag(true));
+
+$('bSqueeze').addEventListener('click', () => {
+  const b = G.ground.find(x => x.id === G.sel); if (!b) return;
+  const z = squeeze(b, 'you'); G.squeezed = true;
+  status(feelWords(z));
+  token++; G.fc.clear(); renderPanel(); renderInspector();
+  const first = G.slot !== null ? [[b.id, G.slot]] : [];
+  forecast(first.concat(allSlots(b.id)), QUICK).then(ok => { if (ok && G.slot !== null) forecast([[b.id, G.slot]], FULL); });
+});
+$('bPlace').addEventListener('click', () => { if (G.sel && G.slot !== null) place(G.sel, G.slot, 'you'); });
+$('bNew').addEventListener('click', newGame);
+$('cInspect').addEventListener('change', e => {
+  inspect = e.target.checked; $('inspector').hidden = !inspect;
+  try { localStorage.setItem('bs-inspect', inspect ? '1' : '0'); } catch (_) {}
+  renderInspector();
+});
+$('bCopy').addEventListener('click', () => {
+  const json = JSON.stringify(Tr.export(), null, 2), out = $('traceOut');
+  const fallback = () => { out.value = json; out.hidden = false; out.focus(); out.select(); $('bCopy').textContent = 'Select all and copy'; };
+  try {
+    navigator.clipboard.writeText(json).then(() => { $('bCopy').textContent = 'Copied'; setTimeout(() => $('bCopy').textContent = 'Copy trace JSON', 1600); }, fallback);
+  } catch (_) { fallback(); }
+});
+
+try { if (localStorage.getItem('bs-inspect') === '1') { $('cInspect').checked = true; inspect = true; $('inspector').hidden = false; } } catch (_) {}
+newGame();
+requestAnimationFrame(frame);
+})();
+</script>
