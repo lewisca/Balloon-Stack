@@ -42,7 +42,7 @@ npm install
 npm run build   # assemble index.html from src/
 npm run check   # headless calibration check; fails if Brier > 0.08
 npm run trace   # play a seeded game headlessly and write docs/sample-trace.json
-npm run export -- <trace.json>   # send a trace to an OTLP collector (default localhost:4318)
+npm run export -- <trace.json>   # send a trace to an OTLP collector (default localhost:4318; see Sending traces to Arize)
 ```
 
 `npm run check` plays seeded games in Node, forecasts each move with 16 rollouts, plays it out for real, and reports the result:
@@ -137,7 +137,29 @@ Any OpenTelemetry backend works. To run one locally with [Jaeger](https://www.ja
 3. Send it: `npm run export -- path/to/balloon-stack-trace-….json`. You can also try it with the sample: `npm run export -- docs/sample-trace.json`.
 4. Open http://localhost:16686 and pick service **balloon-stack**. Each move is a trace. To see one game, search by tag `session.id=<id>`.
 
-To send traces somewhere else, pass the endpoint as a second argument, or set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`. Viewers with a sessions view, such as [Arize Phoenix](https://phoenix.arize.com/), group the traces by `session.id`.
+### Sending traces to Arize
+
+The exporter reads the standard OpenTelemetry environment variables, so a hosted backend only needs configuration. Arize groups each game's traces under **Sessions**, using `session.id`.
+
+**Arize AX.** Get your Space ID and API key from *Space Settings*:
+
+```bash
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp.arize.com/v1/traces   # EU spaces: https://otlp.eu-west-1a.arize.com/v1/traces
+export OTEL_EXPORTER_OTLP_TRACES_HEADERS="space_id=<space-id>,api_key=<api-key>"
+export OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=balloon-stack
+npm run export -- docs/sample-trace.json
+```
+
+**Phoenix Cloud or self-hosted Phoenix.** Use your space's hostname from the Phoenix settings page:
+
+```bash
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://app.phoenix.arize.com/s/<your-space>/v1/traces   # self-hosted: http://localhost:6006/v1/traces
+export OTEL_EXPORTER_OTLP_TRACES_HEADERS="authorization=Bearer%20<phoenix-api-key>"
+export OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=balloon-stack
+npm run export -- docs/sample-trace.json
+```
+
+Header values are URL-encoded, so `%20` is the space after `Bearer`. Any other OTLP backend works the same way: set its endpoint and headers.
 
 ## Lessons learned: a calibration bug found through the inspector
 
