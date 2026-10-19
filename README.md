@@ -22,7 +22,7 @@ The game is a small, end-to-end example of making decisions under uncertainty, w
 | **Monte Carlo forecasting with physics rollouts** | To score a placement, the forecaster rebuilds the current stack in a fresh [Matter.js](https://brm.io/matter-js/) world, draws every balloon's hidden values from its beliefs, drops the new balloon, and simulates. The share of rollouts in which nothing spills is its estimate of P(hold). |
 | **An AI opponent that picks by expected success** | On its turn, the AI squeezes whichever balloon it's least sure about, shortlists the three balloons it believes are grippiest, runs 8 rollouts for every spot, refines the top three to 32 rollouts, and plays the one most likely to hold. |
 | **Calibration scoring** | Every forecast is graded against what actually happened. The inspector shows a reliability table (predicted vs. actual by bucket) and the running **Brier score**. A headless check measures calibration over many simulated games and fails the build if it drifts. |
-| **Decision tracing for observability** | Each game is an OpenTelemetry session, and each move is its own trace: `move > squeeze / forecast / physics.settle`. Spans record priors, readings, posteriors, candidate odds, the AI's decision, and the outcome. The trace downloads as OTLP/JSON and loads into Jaeger or any OpenTelemetry backend. |
+| **Decision tracing for observability** | Each game is an OpenTelemetry session, and each move is its own trace: `move > squeeze / forecast / physics.settle`. Spans record priors, readings, posteriors, candidate odds, the AI's decision, and the outcome. Spans use OpenInference kinds (AGENT, CHAIN, TOOL, EVALUATOR) with input and output summaries. They export as OTLP to [Arize AX](https://arize.com/), where each game shows up as a session you can replay and filter. |
 
 The player's view has no numbers. Turn on the **AI inspector** to see per-spot odds, belief bars with uncertainty bands, the calibration table, the Brier score, and the decision trace.
 
@@ -42,7 +42,7 @@ npm install
 npm run build   # assemble index.html from src/
 npm run check   # headless calibration check; fails if Brier > 0.08
 npm run trace   # play a seeded game headlessly and write docs/sample-trace.json
-npm run export -- <trace.json>   # send a trace to an OTLP collector (default localhost:4318; see Sending traces to Arize)
+npm run export -- <trace.json>   # send a trace to Arize AX or any OTLP backend (see Observability with Arize)
 ```
 
 `npm run check` plays seeded games in Node, forecasts each move with 16 rollouts, plays it out for real, and reports the result:
@@ -71,22 +71,52 @@ headless/        calibration check, sample-trace generator, OTLP exporter
 docs/            sample trace (and screenshot)
 ```
 
-## Traces: one session per game, one trace per move
+## Observability with Arize
 
-Every game is a **session**. Each balloon placement is its own **trace**, rooted at a `move` span:
+The forecaster is an agent that makes decisions under uncertainty, so it's instrumented the way you'd instrument an AI system in production. Every decision is traced with its inputs, its reasoning steps, its prediction and the real outcome. The traces go to [Arize AX](https://arize.com/), where each game can be replayed, filtered and measured.
+
+![Balloon Stack traces in Arize AX](docs/arize-traces.png)
+<!-- Screenshot placeholder: save a capture of the balloon-stack project's Traces tab in Arize AX as docs/arize-traces.png -->
+
+### The trace model
+
+Each game is a **session**, and each balloon placement is its own **trace**. Spans follow [OpenInference](https://github.com/Arize-ai/openinference) conventions, so Arize fills in its Kind, Input and Output columns:
 
 ```
-session 91297a41…  (session.id on every span)
-├── trace: game                 mode, result, Brier score, true hidden values
-├── trace: move 1
-│   ├── squeeze                 prior → noisy reading → Kalman gain → posterior
-│   ├── forecast                every candidate spot with its rollouts and P(hold)
-│   └── physics.settle          the real outcome: held, or which balloons spilled
-├── trace: move 2
-│   └── …
+session 91297a41…                          session.id on every span
+├── game            AGENT       solo game, 11 balloons, AI first  →  won: 11 stacked, Brier 0.000
+├── move 1          CHAIN       Move 1 by AI: 0 stacked           →  #2 → spot 1, P(hold) 100% over 32 rollouts, held
+│   ├── squeeze         TOOL        squeeze #1: grip 0.50 ± 0.25  →  posterior grip 0.31 ± 0.13
+│   ├── forecast        EVALUATOR   21 candidate spots, 240 rollouts  →  best: #2 → spot 1, P(hold) 100%
+│   └── physics.settle  TOOL        drop #2 in spot 1             →  held
+├── move 2          CHAIN       …
 ```
 
-**Download trace** in the inspector saves the current game as strict [OTLP/JSON](https://opentelemetry.io/docs/specs/otlp/#json-protobuf-encoding), the format OpenTelemetry collectors accept at `/v1/traces`.
+Under the summaries, every span keeps the full detail as attributes: priors, readings, Kalman gains, posteriors, every candidate spot with its rollouts and P(hold), the AI's decision with its shortlist, the outcome, and each move's Brier contribution. The `game` span records the true hidden values, which are revealed when the game ends.
+
+### Sending a game to Arize AX
+
+1. Play a game, open the **AI inspector**, and click **Download trace**. It saves the game as strict [OTLP/JSON](https://opentelemetry.io/docs/specs/otlp/#json-protobuf-encoding).
+2. Get your Space ID and API key from *Space Settings* in Arize AX, then send the file:
+
+   ```bash
+   export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp.arize.com/v1/traces   # EU spaces: https://otlp.eu-west-1a.arize.com/v1/traces
+   export OTEL_EXPORTER_OTLP_TRACES_HEADERS="space_id=<space-id>,api_key=<api-key>"
+   export OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=balloon-stack
+   npm run export -- path/to/balloon-stack-trace-….json
+   ```
+
+   In PowerShell, set each variable with `$env:NAME = "value"` instead of `export`. To try it without playing first, send the sample: `npm run export -- docs/sample-trace.json`.
+3. Open the **balloon-stack** project. **Traces** lists every move, and **Sessions** groups them by game.
+
+### What you can do with the traces
+
+- **Replay a game decision by decision.** Open a session to step through its moves in order. Each move shows what the AI believed, what it predicted and what happened.
+- **Find the failures.** Filter spans on `outcome.held = false` to find every placement that spilled, with the forecast made just before it.
+- **Check calibration in production terms.** Every `move` span carries both `prediction.p_hold` and `outcome.held`, the same pair the inspector's reliability table and the Brier score are computed from. Across many games, the traces show whether a 90% forecast holds about 90% of the time.
+- **Audit the reasoning.** The Input and Output columns read as a log of the agent's choices: which balloon it squeezed, how much the reading changed its belief, and which spot it chose at what odds.
+
+The project doesn't define Arize evals or monitors yet. A natural next step would be an eval that scores each move's forecast against its outcome.
 
 ### A trace excerpt
 
@@ -128,40 +158,12 @@ It then compared 21 candidate spots across three balloons (240 rollouts in total
 }
 ```
 
-### Viewing traces in a trace viewer
+### Other backends
 
-Any OpenTelemetry backend works. To run one locally with [Jaeger](https://www.jaegertracing.io/download/):
+The trace is standard OTLP, and `npm run export` reads the standard OpenTelemetry environment variables. Any OpenTelemetry backend works with just an endpoint and headers.
 
-1. Start Jaeger v2. Either use Docker, `docker run --rm -p 16686:16686 -p 4318:4318 jaegertracing/jaeger:latest`, or download the binary for your OS and run `jaeger`. It accepts OTLP over HTTP on port 4318.
-2. Play a game, open the inspector, and click **Download trace**.
-3. Send it: `npm run export -- path/to/balloon-stack-trace-….json`. You can also try it with the sample: `npm run export -- docs/sample-trace.json`.
-4. Open http://localhost:16686 and pick service **balloon-stack**. Each move is a trace. To see one game, search by tag `session.id=<id>`.
-
-### Sending traces to Arize
-
-The exporter reads the standard OpenTelemetry environment variables, so a hosted backend only needs configuration. Arize groups each game's traces under **Sessions**, using `session.id`.
-
-Spans also carry [OpenInference](https://github.com/Arize-ai/openinference) attributes. `openinference.span.kind` marks `game` as AGENT, `move` as CHAIN, `squeeze` and `physics.settle` as TOOL, and `forecast` as EVALUATOR. `input.value` and `output.value` give a one-line summary of each span, such as `#5 → spot 2, P(hold) 100% over 32 rollouts, held`. Arize shows these in its Kind, Input and Output columns.
-
-**Arize AX.** Get your Space ID and API key from *Space Settings*:
-
-```bash
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp.arize.com/v1/traces   # EU spaces: https://otlp.eu-west-1a.arize.com/v1/traces
-export OTEL_EXPORTER_OTLP_TRACES_HEADERS="space_id=<space-id>,api_key=<api-key>"
-export OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=balloon-stack
-npm run export -- docs/sample-trace.json
-```
-
-**Phoenix Cloud or self-hosted Phoenix.** Use your space's hostname from the Phoenix settings page:
-
-```bash
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://app.phoenix.arize.com/s/<your-space>/v1/traces   # self-hosted: http://localhost:6006/v1/traces
-export OTEL_EXPORTER_OTLP_TRACES_HEADERS="authorization=Bearer%20<phoenix-api-key>"
-export OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=balloon-stack
-npm run export -- docs/sample-trace.json
-```
-
-Header values are URL-encoded, so `%20` is the space after `Bearer`. Any other OTLP backend works the same way: set its endpoint and headers.
+- **Jaeger, local, no account:** run Jaeger v2, either with `docker run --rm -p 16686:16686 -p 4318:4318 jaegertracing/jaeger:latest` or the [binary](https://www.jaegertracing.io/download/). Then run `npm run export -- <trace.json>` with no variables set; it defaults to `http://localhost:4318/v1/traces`. In the UI at http://localhost:16686, search by tag `session.id=<id>` to see one game.
+- **Phoenix:** set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://app.phoenix.arize.com/s/<your-space>/v1/traces` (self-hosted: `http://localhost:6006/v1/traces`) and `OTEL_EXPORTER_OTLP_TRACES_HEADERS="authorization=Bearer%20<phoenix-api-key>"`. Header values are URL-encoded, so `%20` is the space after `Bearer`.
 
 ## Lessons learned: a calibration bug found through the inspector
 
