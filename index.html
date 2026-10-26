@@ -500,7 +500,9 @@ function finishPlace() {
 }
 // Auto-send: each game's trace goes once to the local relay (npm run relay), which forwards it to Arize.
 // text/plain keeps it a simple request (no CORS preflight). If no relay is running, nothing happens.
-const RELAY = 'http://localhost:4320/v1/traces';
+// Served by the relay (http://localhost:4320): post to the same origin. From a file or another site: post to the default relay.
+const servedLocally = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(location.origin);
+const RELAY = servedLocally ? '/v1/traces' : 'http://localhost:4320/v1/traces';
 function sendTrace(keepalive) {
   if (G.sent || !G.move || typeof fetch !== 'function') return;
   G.sent = true;
@@ -508,7 +510,9 @@ function sendTrace(keepalive) {
   fetch(RELAY, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body, keepalive: !!keepalive })
     .then(r => r.ok ? r.json().then(j => say(`Last game sent to the relay: ${j.spans} span${j.spans === 1 ? '' : 's'} forwarded.`))
                     : r.text().then(t => say(`Relay could not forward the last game: ${t.slice(0, 120)}`)))
-    .catch(() => say('Auto-send is off: no relay running. Start one with npm run relay.'));
+    .catch(() => say(servedLocally
+      ? 'Could not reach the relay. Is npm run relay still running?'
+      : 'Trace not sent: could not reach the relay. Start npm run relay and play at http://localhost:4320.'));
 }
 addEventListener('pagehide', () => { if (G && !G.over) { Tr.end(G.gameSpan, { 'game.result': 'abandoned' }); sendTrace(true); } });
 

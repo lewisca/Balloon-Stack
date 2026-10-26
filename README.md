@@ -44,7 +44,7 @@ npm run build   # assemble index.html from src/
 npm run check   # headless calibration check; fails if Brier > 0.08
 npm run trace   # play a seeded game headlessly and write docs/sample-trace.json
 npm run export -- <trace.json>   # send a trace to Arize AX or any OTLP backend (see Observability with Arize)
-npm run relay                    # auto-forward every finished game to Arize AX (see Observability with Arize)
+npm run relay                    # play at http://localhost:4320; each finished game goes to Arize AX automatically
 ```
 
 `npm run check` plays seeded games in Node, forecasts each move with 16 rollouts, plays it out for real, and reports the result:
@@ -107,11 +107,11 @@ export OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=balloon-stack
 
 In PowerShell, set each variable with `$env:NAME = "value"` instead of `export`.
 
-**Automatically, with the local relay.** Run `npm run relay` in that shell and leave it running. When a game ends, or you start a new one partway through, the page sends that game's trace to the relay on `http://localhost:4320`. The relay forwards it to Arize and logs each game it sends. The inspector shows whether the last game went through. Your API key stays in the relay process; the page never sees it. The relay only accepts requests from the game itself: the local file, `localhost`, or the GitHub Pages site. If no relay is running, the game plays as normal and sends nothing.
+**Automatically, with the local relay.** Run `npm run relay` in that shell and leave it running, then play at **http://localhost:4320**. The relay serves the game there. As soon as a game ends, the page sends its trace to the relay, which forwards it to Arize and logs each game. If you start a new game partway through one, the unfinished game is sent too. The inspector shows whether the last game went through. Your API key stays in the relay process; the page never sees it.
 
-- **Local copy:** this works when you open `index.html` straight from disk or serve it from `localhost`.
-- **GitHub Pages site:** your browser may ask whether the site can reach devices on your local network. Allow it, or play the local copy.
-- **Closing the tab:** this sends an unfinished game only if its trace is small. Large traces from long games may be lost, so finish the game or start a new one before closing.
+- **Play at http://localhost:4320.** The page and the relay are then the same site, so the browser has nothing to block.
+- **GitHub Pages site or a double-clicked `index.html`:** these also try to send to the relay, but browsers increasingly block public sites from contacting `localhost` unless you allow it. If the inspector says the trace wasn't sent, play at http://localhost:4320 instead.
+- **Closing the tab:** this sends an unfinished game only if its trace is small, so finish the game or start a new one before closing.
 
 **Manually.** Open the **AI inspector**, click **Download trace**, and run `npm run export -- path/to/balloon-stack-trace-….json`. To try it without playing first, send the sample: `npm run export -- docs/sample-trace.json`.
 
