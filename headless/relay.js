@@ -1,9 +1,10 @@
-// Local relay: the game POSTs each finished game's trace here, and the relay forwards it to Arize
-// (or any OTLP backend) using the same env vars as `npm run export`. Your API key stays on this machine.
+// Local relay: the game POSTs each finished game's trace here, and the relay forwards it to Arize AX
+// using the same env vars as `npm run export`. Your API key stays on this machine.
 // It also serves the game itself, so playing at http://localhost:4320 needs no cross-site permission.
 // Usage: npm run relay        (play at http://localhost:4320)
 const http = require('http'), fs = require('fs'), path = require('path');
-const { send, defaultEndpoint } = require('./export-otlp.js');
+const { send, checkConfig, defaultEndpoint } = require('./export-otlp.js');
+try { checkConfig(); } catch (e) { console.error(e.message); process.exit(1); }
 const PORT = Number(process.env.RELAY_PORT || 4320), MAX_BYTES = 10 * 1024 * 1024;
 // Only the game may use the relay: the local file (origin "null"), localhost, and the GitHub Pages site.
 const allowed = o => o === 'null' || o === 'https://lewisca.github.io' || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || '');

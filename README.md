@@ -43,7 +43,7 @@ npm install
 npm run build   # assemble index.html from src/
 npm run check   # headless calibration check; fails if Brier > 0.08
 npm run trace   # play a seeded game headlessly and write docs/sample-trace.json
-npm run export -- <trace.json>   # send a trace to Arize AX or any OTLP backend (see Observability with Arize)
+npm run export -- <trace.json>   # send a downloaded trace to Arize AX (see Observability with Arize)
 npm run relay                    # play at http://localhost:4320; each finished game goes to Arize AX automatically
 ```
 
@@ -100,12 +100,10 @@ Under the summaries, every span keeps the full detail as attributes: priors, rea
 Get your Space ID and API key from *Space Settings* in Arize AX, and set them in your shell:
 
 ```bash
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp.arize.com/v1/traces   # EU spaces: https://otlp.eu-west-1a.arize.com/v1/traces
 export OTEL_EXPORTER_OTLP_TRACES_HEADERS="space_id=<space-id>,api_key=<api-key>"
-export OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=balloon-stack
 ```
 
-In PowerShell, set each variable with `$env:NAME = "value"` instead of `export`.
+In PowerShell, use `$env:OTEL_EXPORTER_OTLP_TRACES_HEADERS = "space_id=<space-id>,api_key=<api-key>"`. Traces go to `https://otlp.arize.com/v1/traces`, in the project **balloon-stack**. For an EU space, also set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp.eu-west-1a.arize.com/v1/traces`. To use a different project name, set `OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=<name>`. If the Space ID or API key is missing, the relay and the exporter stop with a message saying so.
 
 **Automatically, with the local relay.** Run `npm run relay` in that shell and leave it running, then play at **http://localhost:4320**. The relay serves the game there. As soon as a game ends, the page sends its trace to the relay, which forwards it to Arize and logs each game. If you start a new game partway through one, the unfinished game is sent too. The inspector shows whether the last game went through. Your API key stays in the relay process; the page never sees it.
 
@@ -168,10 +166,7 @@ It then compared 21 candidate spots across three balloons (240 rollouts in total
 
 ### Other backends
 
-The trace is standard OTLP, and `npm run export` reads the standard OpenTelemetry environment variables. Any OpenTelemetry backend works with just an endpoint and headers.
-
-- **Jaeger, local, no account:** run Jaeger v2, either with `docker run --rm -p 16686:16686 -p 4318:4318 jaegertracing/jaeger:latest` or the [binary](https://www.jaegertracing.io/download/). Then run `npm run export -- <trace.json>` with no variables set; it defaults to `http://localhost:4318/v1/traces`. In the UI at http://localhost:16686, search by tag `session.id=<id>` to see one game.
-- **Phoenix:** set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://app.phoenix.arize.com/s/<your-space>/v1/traces` (self-hosted: `http://localhost:6006/v1/traces`) and `OTEL_EXPORTER_OTLP_TRACES_HEADERS="authorization=Bearer%20<phoenix-api-key>"`. Header values are URL-encoded, so `%20` is the space after `Bearer`.
+The trace is standard OTLP, so any OpenTelemetry backend can receive it: set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` and `OTEL_EXPORTER_OTLP_TRACES_HEADERS` for that backend.
 
 ## Lessons learned: a calibration bug found through the inspector
 
