@@ -42,4 +42,12 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, '127.0.0.1', () => {
   console.log(`play at   http://localhost:${PORT}`);
   console.log(`relaying  http://localhost:${PORT}/v1/traces  →  ${defaultEndpoint()}`);
+  // An empty export checks the endpoint and credentials without sending any spans.
+  send({ resourceSpans: [] })
+    .then(() => console.log('Arize accepted your Space ID and API key. Finished games will be forwarded.'))
+    .catch(e => console.error(`WARNING: Arize rejected the credentials check: ${e.message}`));
+});
+server.on('error', e => {
+  console.error(e.code === 'EADDRINUSE' ? `Port ${PORT} is already in use. Is another relay still running? Close it and try again.` : e.message);
+  process.exit(1);
 });
