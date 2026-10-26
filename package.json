@@ -8,7 +8,8 @@
     "build": "node build.js",
     "check": "node headless/calibration-check.js",
     "trace": "node headless/sample-trace.js",
-    "export": "node headless/export-otlp.js"
+    "export": "node headless/export-otlp.js",
+    "relay": "node headless/relay.js"
   },
   "devDependencies": {
     "matter-js": "0.19.0"

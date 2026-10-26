@@ -22,7 +22,7 @@ const ctx = {
   Matter: require('matter-js'), Math: math, performance, console,
   document: { getElementById: id => els[id] || (els[id] = stub()), documentElement: stub(), createElement: stub() },
   window: { devicePixelRatio: 1 }, navigator: stub(), localStorage: stub(),
-  matchMedia: stub(), getComputedStyle: stub(), MutationObserver: stub(),
+  matchMedia: stub(), getComputedStyle: stub(), MutationObserver: stub(), addEventListener: () => {},
   setTimeout: f => setTimeout(f, 0),
   requestAnimationFrame: f => setImmediate(() => {
     const t = ctx.__trace && ctx.__trace();

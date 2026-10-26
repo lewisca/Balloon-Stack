@@ -84,12 +84,13 @@ function layoutGround() { G.ground.forEach((b, i) => { const [x, row] = PILE[i];
 function newGame() {
   token++;
   if (G && G.gameSpan) Tr.end(G.gameSpan, { 'game.result': 'abandoned' });
+  if (G) sendTrace();
   const vs = $('mVs').checked;
   if (vs) starter = starter === 'you' ? 'ai' : 'you';
   G = { mode: vs ? 'vs' : 'solo', ground: makeBalloons(rng, N), stack: [], turn: vs ? starter : 'you',
         sel: null, slot: null, fc: new Map(), squeezed: false, busy: false, over: null,
         calib: [], placed: { you: 0, ai: 0 }, engine: makeEngine(M), bodies: new Map(),
-        settle: 0, pending: null, wobble: null, reveal: false, parts: [], pops: [], popped: new Set(), sessionId: hex(32), move: 0, turnSpan: null };
+        settle: 0, pending: null, wobble: null, reveal: false, parts: [], pops: [], popped: new Set(), sessionId: hex(32), move: 0, turnSpan: null, sent: false };
   Tr.spans = [];
   G.gameSpan = Tr.start('game', null, { 'game.mode': G.mode, 'game.balloons': N, 'game.first_turn': G.turn });
   layoutGround();
@@ -196,6 +197,20 @@ function finishPlace() {
   renderPanel(); renderInspector();
   if (G.turn === 'ai') setTimeout(aiTurn, 500);
 }
+// Auto-send: each game's trace goes once to the local relay (npm run relay), which forwards it to Arize.
+// text/plain keeps it a simple request (no CORS preflight). If no relay is running, nothing happens.
+const RELAY = 'http://localhost:4320/v1/traces';
+function sendTrace(keepalive) {
+  if (G.sent || !G.move || typeof fetch !== 'function') return;
+  G.sent = true;
+  const body = JSON.stringify(Tr.export()), say = t => { const el = $('tSend'); if (el) el.textContent = t; };
+  fetch(RELAY, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body, keepalive: !!keepalive })
+    .then(r => r.ok ? r.json().then(j => say(`Last game sent to the relay: ${j.spans} span${j.spans === 1 ? '' : 's'} forwarded.`))
+                    : r.text().then(t => say(`Relay could not forward the last game: ${t.slice(0, 120)}`)))
+    .catch(() => say('Auto-send is off: no relay running. Start one with npm run relay.'));
+}
+addEventListener('pagehide', () => { if (G && !G.over) { Tr.end(G.gameSpan, { 'game.result': 'abandoned' }); sendTrace(true); } });
+
 function endGame(result, why) {
   G.over = result; G.reveal = true;
   Tr.end(G.gameSpan, { 'game.result': result, 'game.end_reason': why, 'stack.final_size': G.stack.length - (why === 'spill' ? 1 : 0),
@@ -207,6 +222,7 @@ function endGame(result, why) {
   const b = $('banner');
   b.innerHTML = `<b>${head}</b>${msg}`;
   b.hidden = false; status(''); renderPanel(); renderInspector();
+  sendTrace();
 }
 
 // ---------- AI ----------
