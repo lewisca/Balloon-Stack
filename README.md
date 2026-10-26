@@ -97,15 +97,15 @@ Under the summaries, every span keeps the full detail as attributes: priors, rea
 
 ### Sending games to Arize AX
 
-Get your Space ID and API key from *Space Settings* in Arize AX, and set them in your shell:
+Get your Space ID and API key from *Space Settings* in Arize AX. Put them in a file named `.env` in the project folder:
 
-```bash
-export OTEL_EXPORTER_OTLP_TRACES_HEADERS="space_id=<space-id>,api_key=<api-key>"
+```
+OTEL_EXPORTER_OTLP_TRACES_HEADERS=space_id=<space-id>,api_key=<api-key>
 ```
 
-In PowerShell, use `$env:OTEL_EXPORTER_OTLP_TRACES_HEADERS = "space_id=<space-id>,api_key=<api-key>"`. Traces go to `https://otlp.arize.com/v1/traces`, in the project **balloon-stack**. For an EU space, also set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp.eu-west-1a.arize.com/v1/traces`. To use a different project name, set `OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=<name>`. If the Space ID or API key is missing, the relay and the exporter stop with a message saying so.
+The first time you run `npm run relay` without credentials, it creates this file, opens it in Notepad on Windows, and tells you what to replace. `.env` is listed in `.gitignore`, so it's never committed. The same setting also works as an ordinary environment variable. Traces go to `https://otlp.arize.com/v1/traces`, in the project **balloon-stack**. For an EU space, add `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp.eu-west-1a.arize.com/v1/traces`. To use a different project name, add `OTEL_RESOURCE_ATTRIBUTES=openinference.project.name=<name>`.
 
-**Automatically, with the local relay.** Run `npm run relay` and leave it running, then play at **http://localhost:4320**. If the Space ID and API key aren't set, the relay asks for them when it starts and keeps them in memory only. It then checks them with Arize and tells you whether they were accepted. The relay serves the game there. As soon as a game ends, the page sends its trace to the relay, which forwards it to Arize and logs each game. If you start a new game partway through one, the unfinished game is sent too. The inspector shows whether the last game went through. Your API key stays in the relay process; the page never sees it.
+**Automatically, with the local relay.** Run `npm run relay` and leave it running, then play at **http://localhost:4320**. When it starts, it checks your Space ID and API key with Arize and tells you whether they were accepted. The relay serves the game there. As soon as a game ends, the page sends its trace to the relay, which forwards it to Arize and logs each game. If you start a new game partway through one, the unfinished game is sent too. The inspector shows whether the last game went through. Your API key stays in the relay process; the page never sees it.
 
 - **Play at http://localhost:4320.** The page and the relay are then the same site, so the browser has nothing to block.
 - **GitHub Pages site or a double-clicked `index.html`:** these also try to send to the relay, but browsers increasingly block public sites from contacting `localhost` unless you allow it. If the inspector says the trace wasn't sent, play at http://localhost:4320 instead.

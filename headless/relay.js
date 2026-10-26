@@ -3,8 +3,7 @@
 // It also serves the game itself, so playing at http://localhost:4320 needs no cross-site permission.
 // Usage: npm run relay        (play at http://localhost:4320)
 const http = require('http'), fs = require('fs'), path = require('path');
-const readline = require('readline');
-const { send, checkConfig, defaultEndpoint } = require('./export-otlp.js');
+const { send, checkConfig, defaultEndpoint, ENV_FILE } = require('./export-otlp.js');
 const PORT = Number(process.env.RELAY_PORT || 4320), MAX_BYTES = 10 * 1024 * 1024;
 // Only the game may use the relay: the local file (origin "null"), localhost, and the GitHub Pages site.
 const allowed = o => o === 'null' || o === 'https://lewisca.github.io' || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || '');
@@ -39,19 +38,17 @@ const server = http.createServer((req, res) => {
     }
   });
 });
-// Asks for the Space ID and API key when they aren't in the environment. The key isn't echoed.
-async function credentials() {
-  try { checkConfig(); return; } catch (e) { if (!process.stdin.isTTY) { console.error(e.message); process.exit(1); } }
-  console.log('Enter your Arize AX credentials (Space Settings in Arize). They are kept in memory only.');
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true });
-  let hide = false; // while typing the key, echo nothing
-  rl._writeToOutput = s => { if (!hide) process.stdout.write(s); };
-  const lines = rl[Symbol.asyncIterator]();
-  const ask = async (q, secret) => { process.stdout.write(q); hide = !!secret; const { value } = await lines.next(); hide = false; if (secret) process.stdout.write('\n'); return (value || '').trim(); };
-  const space = await ask('Space ID: '), key = await ask('API key: ', true);
-  rl.close();
-  if (!space || !key) { console.error('Both a Space ID and an API key are needed.'); process.exit(1); }
-  process.env.OTEL_EXPORTER_OTLP_TRACES_HEADERS = `space_id=${encodeURIComponent(space)},api_key=${encodeURIComponent(key)}`;
+// Without credentials, create a .env template, open it in Notepad, and explain what to fill in.
+function credentials() {
+  try { checkConfig(); return Promise.resolve(); } catch (e) {
+    if (!fs.existsSync(ENV_FILE)) fs.writeFileSync(ENV_FILE,
+      '# Arize AX credentials for Balloon Stack, from Space Settings in Arize. This file is not committed to git.\n' +
+      '# Replace YOUR_SPACE_ID and YOUR_API_KEY, keep the comma between them, then save.\n' +
+      'OTEL_EXPORTER_OTLP_TRACES_HEADERS=space_id=YOUR_SPACE_ID,api_key=YOUR_API_KEY\n');
+    console.error(`Arize needs your Space ID and API key.\n  1. In ${ENV_FILE}, replace YOUR_SPACE_ID and YOUR_API_KEY, then save.\n  2. Run npm run relay again.`);
+    if (process.platform === 'win32') require('child_process').spawn('notepad.exe', [ENV_FILE], { detached: true, stdio: 'ignore' }).unref();
+    process.exit(1);
+  }
 }
 
 credentials().then(() => server.listen(PORT, '127.0.0.1', () => {

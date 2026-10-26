@@ -1,11 +1,14 @@
 // Sends a downloaded trace file (already OTLP/JSON) to Arize AX. Also used by relay.js.
 // Usage: npm run export -- <trace.json>
-// Configured with the standard OpenTelemetry env vars:
+// Configured with the standard OpenTelemetry env vars, read from the environment or from a .env file in the
+// project folder (not committed; values there win over the shell):
 //   OTEL_EXPORTER_OTLP_TRACES_HEADERS   required: "space_id=<space-id>,api_key=<api-key>" from Arize Space Settings
 //   OTEL_EXPORTER_OTLP_TRACES_ENDPOINT  optional: default https://otlp.arize.com/v1/traces (EU: https://otlp.eu-west-1a.arize.com/v1/traces)
 //   OTEL_RESOURCE_ATTRIBUTES            optional: default openinference.project.name=balloon-stack
-const fs = require('fs');
+const fs = require('fs'), path = require('path'), util = require('util');
+const ENV_FILE = path.join(__dirname, '..', '.env');
 const env = process.env;
+try { Object.assign(env, util.parseEnv(fs.readFileSync(ENV_FILE, 'utf8'))); } catch (_) {}
 const pairs = s => (s || '').split(',').filter(p => p.includes('=')).map(p => {
   const i = p.indexOf('='); return [decodeURIComponent(p.slice(0, i).trim()), decodeURIComponent(p.slice(i + 1).trim())];
 });
@@ -18,7 +21,7 @@ function checkConfig(endpoint = defaultEndpoint()) {
   const h = headers(), placeholder = v => !v || /^(YOUR_|<)/i.test(v);
   if (placeholder(h.space_id) || placeholder(h.api_key)) { delete h.space_id; delete h.api_key; }
   if (/\/\/otlp\.[\w.-]*arize\.com\//.test(endpoint) &&!(h.space_id && h.api_key))
-    throw new Error('Arize needs your Space ID and API key. Set OTEL_EXPORTER_OTLP_TRACES_HEADERS="space_id=<space-id>,api_key=<api-key>" (from Space Settings in Arize AX).');
+    throw new Error(`Arize needs your Space ID and API key. Put them in ${ENV_FILE}, on the line OTEL_EXPORTER_OTLP_TRACES_HEADERS=space_id=<space-id>,api_key=<api-key> (from Space Settings in Arize AX).`);
 }
 const spanCount = t => t.resourceSpans.reduce((s, r) => s + r.scopeSpans.reduce((n, ss) => n + ss.spans.length, 0), 0);
 
@@ -42,7 +45,7 @@ async function send(trace, endpoint = defaultEndpoint()) {
   return spanCount(trace);
 }
 
-module.exports = { send, checkConfig, defaultEndpoint, spanCount };
+module.exports = { send, checkConfig, defaultEndpoint, spanCount, ENV_FILE };
 
 if (require.main === module) {
   const [file, endpoint = defaultEndpoint()] = process.argv.slice(2);
