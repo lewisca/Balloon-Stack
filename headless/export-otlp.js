@@ -15,7 +15,8 @@ const headers = () => Object.assign({ 'Content-Type': 'application/json' },
   Object.fromEntries(pairs(env.OTEL_EXPORTER_OTLP_HEADERS)), Object.fromEntries(pairs(env.OTEL_EXPORTER_OTLP_TRACES_HEADERS)));
 // Arize rejects traces without these, so fail early with a clear message.
 function checkConfig(endpoint = defaultEndpoint()) {
-  const h = headers();
+  const h = headers(), placeholder = v => !v || /^(YOUR_|<)/i.test(v);
+  if (placeholder(h.space_id) || placeholder(h.api_key)) { delete h.space_id; delete h.api_key; }
   if (/\/\/otlp\.[\w.-]*arize\.com\//.test(endpoint) &&!(h.space_id && h.api_key))
     throw new Error('Arize needs your Space ID and API key. Set OTEL_EXPORTER_OTLP_TRACES_HEADERS="space_id=<space-id>,api_key=<api-key>" (from Space Settings in Arize AX).');
 }

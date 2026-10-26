@@ -3,8 +3,8 @@
 // It also serves the game itself, so playing at http://localhost:4320 needs no cross-site permission.
 // Usage: npm run relay        (play at http://localhost:4320)
 const http = require('http'), fs = require('fs'), path = require('path');
+const readline = require('readline');
 const { send, checkConfig, defaultEndpoint } = require('./export-otlp.js');
-try { checkConfig(); } catch (e) { console.error(e.message); process.exit(1); }
 const PORT = Number(process.env.RELAY_PORT || 4320), MAX_BYTES = 10 * 1024 * 1024;
 // Only the game may use the relay: the local file (origin "null"), localhost, and the GitHub Pages site.
 const allowed = o => o === 'null' || o === 'https://lewisca.github.io' || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || '');
@@ -39,14 +39,29 @@ const server = http.createServer((req, res) => {
     }
   });
 });
-server.listen(PORT, '127.0.0.1', () => {
+// Asks for the Space ID and API key when they aren't in the environment. The key isn't echoed.
+async function credentials() {
+  try { checkConfig(); return; } catch (e) { if (!process.stdin.isTTY) { console.error(e.message); process.exit(1); } }
+  console.log('Enter your Arize AX credentials (Space Settings in Arize). They are kept in memory only.');
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true });
+  let hide = false; // while typing the key, echo nothing
+  rl._writeToOutput = s => { if (!hide) process.stdout.write(s); };
+  const lines = rl[Symbol.asyncIterator]();
+  const ask = async (q, secret) => { process.stdout.write(q); hide = !!secret; const { value } = await lines.next(); hide = false; if (secret) process.stdout.write('\n'); return (value || '').trim(); };
+  const space = await ask('Space ID: '), key = await ask('API key: ', true);
+  rl.close();
+  if (!space || !key) { console.error('Both a Space ID and an API key are needed.'); process.exit(1); }
+  process.env.OTEL_EXPORTER_OTLP_TRACES_HEADERS = `space_id=${encodeURIComponent(space)},api_key=${encodeURIComponent(key)}`;
+}
+
+credentials().then(() => server.listen(PORT, '127.0.0.1', () => {
   console.log(`play at   http://localhost:${PORT}`);
   console.log(`relaying  http://localhost:${PORT}/v1/traces  →  ${defaultEndpoint()}`);
   // An empty export checks the endpoint and credentials without sending any spans.
   send({ resourceSpans: [] })
     .then(() => console.log('Arize accepted your Space ID and API key. Finished games will be forwarded.'))
     .catch(e => console.error(`WARNING: Arize rejected the credentials check: ${e.message}`));
-});
+}));
 server.on('error', e => {
   console.error(e.code === 'EADDRINUSE' ? `Port ${PORT} is already in use. Is another relay still running? Close it and try again.` : e.message);
   process.exit(1);
